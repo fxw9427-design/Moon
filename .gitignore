@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+node_modules/
+.vscode/
+.idea/
+
+# memories/ 不上传到 GitHub，保留在本地
+memories/
