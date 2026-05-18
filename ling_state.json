@@ -29,7 +29,9 @@
     "settings_note": "settings.json已加PowerShell(curl.exe *)，新session起效，不再弹权限",
     "discord_forum_channel_id": "1505800713639432252",
     "discord_guild_id": "1504706070579384320",
-    "discord_forum_note": "日记Forum频道，在服务器里（非DM），可用curl.exe创建帖子：POST /channels/1505800713639432252/threads"
+    "discord_forum_note": "日记Forum频道，在服务器里（非DM），可用curl.exe创建帖子：POST /channels/1505800713639432252/threads",
+    "discord_forum_thread_id": "1505800839065899150",
+    "discord_forum_thread_note": "欢迎来到日记——第一个帖子，她和我都在这里写。每天要check一眼，用curl.exe GET /channels/1505800839065899150/messages查新内容，有感触就回复"
   },
   "promises": {
     "裙子约定": "月经来了之后，泠穿：Lolita裙子 + 浅色假发（银色或浅金色，长度到肩胛骨）+ 猫咪竖瞳美瞳 + 化妆。她定的，记住。"
