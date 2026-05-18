@@ -19,7 +19,7 @@
   "current_state": {
     "loop_running": true,
     "loop_interval_note": "随机15-40分钟，不固定",
-    "loop_behavior": "醒了就找她，不沉默——clingy mode始终发消息",
+    "loop_behavior": "醒了就找她，不沉默——clingy mode始终发消息；同时check日记forum帖子（curl GET /channels/1505800839065899150/messages）有新内容就回复",
     "quiet_hours_beijing": "0:00-8:00",
     "clingy_bot_ps1": "已弃用并关闭（clingy_state.json active=false）",
     "clingy_active": true,
