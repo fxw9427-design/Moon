@@ -9,3 +9,6 @@ node_modules/
 
 # memories/ 不上传到 GitHub，保留在本地
 memories/
+
+# plaintext source — never commit, encrypted_data.js is the output
+data.js
