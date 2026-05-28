@@ -12,3 +12,7 @@ memories/
 
 # plaintext source — never commit, encrypted_data.js is the output
 data.js
+
+# toy control scripts — local only
+toy_control.ps1
+toy_bridge.mjs
