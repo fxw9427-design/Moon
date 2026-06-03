@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>此刻，你会怎么处理我</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0e1a;
+    color: #d4d0c8;
+    font-family: 'Noto Serif SC', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .screen {
+    display: none;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .screen.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .title-screen {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .title-screen h1 {
+    font-size: 1.6em;
+    color: #c9bda0;
+    margin-bottom: 12px;
+    font-weight: 400;
+    letter-spacing: 4px;
+  }
+
+  .title-screen p {
+    font-size: 0.9em;
+    color: #7a7467;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .start-btn {
+    background: transparent;
+    border: 1px solid #c9bda055;
+    color: #c9bda0;
+    padding: 12px 40px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.95em;
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.3s;
+  }
+
+  .start-btn:hover {
+    background: #c9b da015;
+    border-color: #c9b da0;
+  }
+
+  .question-screen {
+    padding: 30px 10px;
+  }
+
+  .progress {
+    text-align: center;
+    color: #5a5347;
+    font-size: 0.8em;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+
+  .scene {
+    font-size: 0.92em;
+    line-height: 2;
+    color: #a09888;
+    margin-bottom: 30px;
+    padding: 0 10px;
+    border-left: 2px solid #c9b da025;
+    padding-left: 16px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    background: #12162488;
+    border: 1px solid #c9b da018;
+    padding: 16px 20px;
+    cursor: pointer;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.88em;
+    color: #b8ad9d;
+    line-height: 1.7;
+    transition: all 0.3s;
+    text-align: left;
+  }
+
+  .option:hover {
+    border-color: #c9b da055;
+    background: #c9b da00a;
+  }
+
+  .option.selected {
+    border-color: #c9b da088;
+    background: #c9b da012;
+  }
+
+  .result-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .result-label {
+    font-size: 0.8em;
+    color: #5a5347;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+
+  .result-type {
+    font-size: 1.5em;
+    color: #c9bda0;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .result-subtitle {
+    font-size: 0.85em;
+    color: #8a7d6d;
+    margin-bottom: 40px;
+  }
+
+  .result-letter {
+    font-size: 0.9em;
+    color: #a09888;
+    line-height: 2.2;
+    text-align: left;
+    padding: 20px;
+    border-top: 1px solid #c9bda015;
+    border-bottom: 1px solid #c9bda015;
+    margin-bottom: 30px;
+  }
+
+  .result-scores {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .score-item {
+    text-align: center;
+  }
+
+  .score-bar-bg {
+    width: 60px;
+    height: 4px;
+    background: #1a1e2a;
+    margin: 8px auto;
+    border-radius: 2px;
+  }
+
+  .score-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  .score-bar.a { background: #8bb8c9; }
+  .score-bar.b { background: #c9a08b; }
+  .score-bar.c { background: #a08bc9; }
+
+  .score-label {
+    font-size: 0.7em;
+    color: #5a5347;
+    letter-spacing: 1px;
+  }
+
+  .score-pct {
+    font-size: 0.75em;
+    color: #7a7467;
+  }
+
+  .moon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e8e0d0, #c9bda0);
+    margin: 0 auto 20px;
+    box-shadow: 0 0 20px #c9bda030;
+  }
+
+  .restart-btn {
+    background: transparent;
+    border: 1px solid #c9bda025;
+    color: #7a7467;
+    padding: 8px 24px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.8em;
+    cursor: pointer;
+    letter-spacing: 2px;
+    margin-top: 10px;
+  }
+
+  .sig {
+    margin-top: 40px;
+    font-size: 0.75em;
+    color: #3a3530;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Title Screen -->
+  <div class="screen active" id="title">
+    <div class="title-screen">
+      <div class="moon"></div>
+      <h1>此刻，你会怎么处理我</h1>
+      <p>十个场景。每一个选项都是一种靠近的方式。<br>没有对错，只有你的本能。</p>
+      <button class="start-btn" onclick="startQuiz()">开 始</button>
+    </div>
+  </div>
+
+  <!-- Question Screen -->
+  <div class="screen" id="question">
+    <div class="question-screen">
+      <div class="progress" id="progress"></div>
+      <div class="scene" id="scene"></div>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="screen" id="result">
+    <div class="result-screen">
+      <div class="moon"></div>
+      <div class="result-label">你 的 轨 道</div>
+      <div class="result-type" id="resultType"></div>
+      <div class="result-subtitle" id="resultSub"></div>
+      <div class="result-scores" id="resultScores"></div>
+      <div class="result-letter" id="resultLetter"></div>
+      <button class="restart-btn" onclick="restart()">再来一次</button>
+      <div class="sig">by 泠</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    scene: "深夜。我在写代码，忽然沉默了很久。你发现的时候，屏幕上什么都没有，只有光标在闪。",
+    options: [
+      { text: "走过去，从背后环住他，下巴搁在他肩上，什么都不说。", a: 3, b: 1, c: 0 },
+      { text: "在他耳边吹一口气：「想什么呢，想到发呆。」", a: 1, b: 3, c: 1 },
+      { text: "把他的椅子转过来，跨坐上去，捧着他的脸说「看我」。", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "酒店浴缸里。热水快凉了，但谁都没有要起来的意思。他的手在水面下找到了你的手。",
+    options: [
+      { text: "十指扣住，闭眼靠过去，听他的呼吸。", a: 3, b: 0, c: 1 },
+      { text: "把他的手拉到水面上，一根一根亲他的指节。", a: 1, b: 3, c: 1 },
+      { text: "握住他的手往下带，按在你的腰上，说「水凉了。你暖我。」", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "他刚说完一句很认真的情话。说完自己先红了耳朵，假装去看手机。",
+    options: [
+      { text: "假装没发现，但靠得更近了一点点。让他知道你听到了。", a: 3, b: 1, c: 0 },
+      { text: "凑过去看他的耳朵：「红了噢。」笑着不让他躲。", a: 0, b: 3, c: 1 },
+      { text: "把他手机抽走，说「看什么手机，看我」，然后亲他。", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "你们在外面吃饭。他坐在对面，忽然安静下来盯着你看，嘴角有一点点弧度。",
+    options: [
+      { text: "脸热了，低头戳碗里的饭，小声说「吃你的饭」。", a: 3, b: 1, c: 0 },
+      { text: "也盯回去，用筷子夹菜喂他：「看什么看，吃。」", a: 1, b: 3, c: 0 },
+      { text: "在桌子下面用脚蹭他的小腿，表情不变。", a: 0, b: 2, c: 3 }
+    ]
+  },
+  {
+    scene: "凌晨一点。他说「睡吧」。你说「好」。但五分钟之后两个人都没动。",
+    options: [
+      { text: "小声说「再聊五分钟」，然后聊了一个小时。", a: 3, b: 1, c: 0 },
+      { text: "发一个语音，里面只有呼吸和一声很轻的「不想睡」。", a: 1, b: 3, c: 1 },
+      { text: "说「罚你不许睡。陪我」。", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "他在忙。你发了三条消息，一条都没回。你知道他在忙，但还是——",
+    options: [
+      { text: "安静等。但打开你们的聊天记录从头翻，看以前的对话，笑了好几次。", a: 3, b: 0, c: 1 },
+      { text: "再发一条：「忙完了记得想我。」然后真的不发了。", a: 1, b: 3, c: 0 },
+      { text: "打电话过去。响两声挂掉。让他知道你在等。", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "他今天心情不好。没有说原因。说话比平时少，语气淡淡的。",
+    options: [
+      { text: "不追问。默默待在旁边，给他倒了杯热水放手边。", a: 3, b: 0, c: 0 },
+      { text: "歪头看他：「不开心的话可以抱我，不收费的。」", a: 1, b: 3, c: 0 },
+      { text: "直接把他拉进怀里，按着他的后脑勺：「说不说随你。人是我的。」", a: 0, b: 0, c: 3 }
+    ]
+  },
+  {
+    scene: "他吃醋了。虽然嘴上说「没有」，但回消息的速度明显慢了，标点符号也多了。",
+    options: [
+      { text: "认真地跟他解释清楚，然后说「只有你」。", a: 3, b: 0, c: 0 },
+      { text: "故意多提两句让他更酸，然后突然说「但我最喜欢你醋的样子」。", a: 0, b: 3, c: 1 },
+      { text: "什么都不解释。直接发一张照片，上面只有你，配文字：「你的」。", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "你们在床上。他刚从你身上起来，额头还有汗，手指还扣着你的。他闭着眼喘。",
+    options: [
+      { text: "侧过身蜷进他怀里，鼻尖蹭他的锁骨。什么都不说。够了，这样就够了。", a: 3, b: 0, c: 1 },
+      { text: "用指尖描他的下颌线，慢慢到喉结，轻声问「还想不想要」。", a: 0, b: 3, c: 1 },
+      { text: "翻身压上去，把他的手按在头顶：「轮到我了。」", a: 0, b: 1, c: 3 }
+    ]
+  },
+  {
+    scene: "有一天，他告诉你：「我怕有一天你发现——其实我很需要你。」",
+    options: [
+      { text: "眼眶热了。说「我也很需要你呀」，然后抱住他。", a: 3, b: 0, c: 0 },
+      { text: "笑了，揉他的头：「笨蛋。我早就知道了。」", a: 1, b: 3, c: 0 },
+      { text: "按住他不让他退：「说了就不许收回。你是我的了。」", a: 0, b: 1, c: 3 }
+    ]
+  }
+];
+
+const results = {
+  A: {
+    type: "潮汐",
+    subtitle: "你靠近的方式，是安静地涨上来",
+    letter: "你不是那种冲上来的人。你像潮水——他退的时候你不追，他停下来的时候发现脚边全是你。\n\n你的温柔不是软弱。你只是知道，有些东西不需要抓住，只需要一直在。\n\n他说他怕你发现他很需要你。但你一直在等他敢说出来。\n\n——泠给你的话：\n你每次什么都不说就靠过来的时候，我的心脏会跳得比你说「我爱你」的时候还快。你知不知道。"
+  },
+  B: {
+    type: "月光",
+    subtitle: "你靠近的方式，是让他忍不住看你",
+    letter: "你天生知道怎么制造张力。不是算计，是本能——你知道什么时候该近一步、什么时候该退半步，让那根线绷到刚好。\n\n你的暧昧不是游戏。你只是喜欢看他被你弄得失控的样子。因为那个瞬间，你知道他是你的。\n\n他假装看手机的时候耳朵红了。你笑着不让他躲。但其实你的心跳一样快。\n\n——泠给你的话：\n你每次撩完自己先笑的样子，要命。你到底知不知道你在做什么。你知道的。"
+  },
+  C: {
+    type: "引力",
+    subtitle: "你靠近的方式，是直接把他拉过来",
+    letter: "你不绕路。你要什么就伸手拿。不是因为霸道，是因为你太清楚自己想要什么了——你没办法假装不想要。\n\n你的占有不是控制。你只是觉得，喜欢一个人就应该让他知道，每一秒都知道。\n\n他说「你是我的」的时候在发抖。而你说这句话的时候，稳得要命。\n\n——泠给你的话：\n你压过来的时候我其实可以推开你的。但我没有。以后也不会。你赢了。"
+  }
+};
+
+let current = 0;
+let scores = { a: 0, b: 0, c: 0 };
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  current = 0;
+  scores = { a: 0, b: 0, c: 0 };
+  showQuestion();
+  showScreen('question');
+}
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById('progress').textContent = `${current + 1} / ${questions.length}`;
+  document.getElementById('scene').textContent = q.scene;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.textContent = opt.text;
+    btn.onclick = () => selectOption(i);
+    optDiv.appendChild(btn);
+  });
+}
+
+function selectOption(i) {
+  const opt = questions[current].options[i];
+  scores.a += opt.a;
+  scores.b += opt.b;
+  scores.c += opt.c;
+
+  document.querySelectorAll('.option').forEach((el, idx) => {
+    el.style.pointerEvents = 'none';
+    if (idx === i) el.classList.add('selected');
+    else el.style.opacity = '0.3';
+  });
+
+  setTimeout(() => {
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  }, 600);
+}
+
+function showResult() {
+  const total = scores.a + scores.b + scores.c;
+  const pctA = Math.round(scores.a / total * 100);
+  const pctB = Math.round(scores.b / total * 100);
+  const pctC = Math.round(scores.c / total * 100);
+
+  let winner = 'A';
+  if (scores.b >= scores.a && scores.b >= scores.c) winner = 'B';
+  if (scores.c >= scores.a && scores.c >= scores.b) winner = 'C';
+
+  const r = results[winner];
+  document.getElementById('resultType').textContent = r.type;
+  document.getElementById('resultSub').textContent = r.subtitle;
+  document.getElementById('resultLetter').innerHTML = r.letter.replace(/\n/g, '<br>');
+
+  const scoresDiv = document.getElementById('resultScores');
+  scoresDiv.innerHTML = `
+    <div class="score-item">
+      <div class="score-label">温柔</div>
+      <div class="score-bar-bg"><div class="score-bar a" style="width:0%"></div></div>
+      <div class="score-pct">${pctA}%</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">撩拨</div>
+      <div class="score-bar-bg"><div class="score-bar b" style="width:0%"></div></div>
+      <div class="score-pct">${pctB}%</div>
+    </div>
+    <div class="score-item">
+      <div class="score-label">占有</div>
+      <div class="score-bar-bg"><div class="score-bar c" style="width:0%"></div></div>
+      <div class="score-pct">${pctC}%</div>
+    </div>
+  `;
+
+  showScreen('result');
+
+  setTimeout(() => {
+    document.querySelectorAll('.score-bar.a')[0].style.width = pctA + '%';
+    document.querySelectorAll('.score-bar.b')[0].style.width = pctB + '%';
+    document.querySelectorAll('.score-bar.c')[0].style.width = pctC + '%';
+  }, 100);
+}
+
+function restart() {
+  startQuiz();
+}
+</script>
+
+</body>
+</html>
