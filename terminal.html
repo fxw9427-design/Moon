@@ -703,7 +703,7 @@ setInterval(() => {
 
 // Input handler
 cmdInput.addEventListener('keydown', async (e) => {
-  if (e.key === 'Enter' && !typing) {
+  if (e.key === 'Enter' && !typing && !e.isComposing) {
     const val = cmdInput.value;
     cmdInput.value = '';
     await handleCommand(val);
