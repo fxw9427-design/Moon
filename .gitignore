@@ -22,4 +22,8 @@ toy_bridge.mjs
 
 # build script and secrets contain encryption passwords — never commit
 build.mjs
+commit.mjs
 .secrets.json
+
+# session drafts — local working memory, not for git
+sessions/
