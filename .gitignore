@@ -20,9 +20,10 @@ toy_bridge.mjs
 # MCP config contains API keys — never commit
 .mcp.json
 
-# build script and secrets contain encryption passwords — never commit
+# build scripts and secrets — local only, never commit
 build.mjs
 commit.mjs
+lint_data.mjs
 .secrets.json
 
 # session drafts — local working memory, not for git
