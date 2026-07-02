@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☀️ Sun · 泠晞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:     #FFF8EC;
+  --card:   #FFFFFF;
+  --orange: #E8651A;
+  --soft:   #FF9A56;
+  --pale:   #FFF0E0;
+  --text:   #3A2618;
+  --mid:    #9B7B6A;
+  --muted:  #C9A898;
+  --bdr:    rgba(200,120,60,.14);
+  --sh:     0 2px 14px rgba(200,95,30,.09);
+  --sh-h:   0 6px 26px rgba(200,95,30,.17);
+  --r:      18px;
+  --rs:     12px;
+}
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(255,154,86,.14) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 10% 100%, rgba(255,200,130,.08) 0%, transparent 60%);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 88px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 22px; }
+
+/* ─── Header ─── */
+.hd {
+  padding: 34px 0 6px;
+  display: flex; align-items: center; justify-content: space-between;
+  animation: up .45s ease .04s backwards;
+}
+
+.greeting { font-size: 26px; font-weight: 500; letter-spacing: -.4px; }
+
+.moon-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--card); border: 1px solid var(--bdr);
+  box-shadow: var(--sh); text-decoration: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; transition: transform .2s, box-shadow .2s; cursor: pointer;
+}
+.moon-btn:hover { transform: scale(1.1) rotate(-12deg); box-shadow: var(--sh-h); }
+
+/* ─── Section labels ─── */
+.sec {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 2.8px;
+  text-transform: uppercase; color: var(--muted);
+  margin: 34px 0 13px;
+}
+.sec.first { margin-top: 14px; }
+
+/* ─── Quote card ─── */
+.quote-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 32px 40px 26px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  text-align: center; transition: box-shadow .25s;
+  animation: up .45s ease .10s backwards;
+}
+.quote-card:hover { box-shadow: var(--sh-h); }
+
+.q-mark {
+  display: block; font-size: 60px; line-height: .5;
+  color: var(--soft); opacity: .3;
+  font-family: Georgia, 'Times New Roman', serif;
+  margin-bottom: 20px; user-select: none;
+}
+
+.q-text {
+  font-size: 17px; line-height: 1.8; font-weight: 300; font-style: italic;
+  color: var(--text); min-height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .22s; letter-spacing: .1px;
+}
+.q-text.fade { opacity: 0; }
+
+.q-btn {
+  margin-top: 20px; background: none; border: 1px solid var(--bdr);
+  border-radius: 24px; padding: 7px 20px;
+  font-size: 12px; font-family: inherit; letter-spacing: .8px;
+  color: var(--mid); cursor: pointer; transition: all .2s;
+}
+.q-btn:hover { background: var(--pale); border-color: var(--soft); color: var(--orange); }
+
+/* ─── Vocab grid ─── */
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 13px;
+  animation: up .45s ease .18s backwards;
+}
+
+.flip-card { height: 164px; perspective: 900px; cursor: pointer; }
+
+.flip-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .52s cubic-bezier(.35, 0, .2, 1);
+}
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+
+.flip-f, .flip-b {
+  position: absolute; inset: 0; border-radius: var(--rs);
+  padding: 16px 18px;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  transition: box-shadow .2s;
+}
+.flip-card:hover .flip-f,
+.flip-card:hover .flip-b { box-shadow: var(--sh-h); }
+
+.flip-f {
+  background: var(--card);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.flip-b {
+  background: linear-gradient(148deg, #FFF4E6 0%, #FFE5C8 100%);
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.word  { font-size: 20px; font-weight: 600; letter-spacing: -.3px; }
+.phon  { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-style: italic; }
+.pos   {
+  display: inline-block; margin-top: 7px;
+  font-size: 10px; font-weight: 600; letter-spacing: .8px;
+  background: var(--pale); color: var(--orange);
+  border-radius: 5px; padding: 2px 8px;
+}
+.cf { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--muted); }
+
+.bdef { font-size: 13px; color: var(--text); line-height: 1.55; font-weight: 400; }
+.bex  {
+  font-size: 11px; color: var(--mid); font-style: italic;
+  border-left: 2.5px solid var(--soft);
+  padding-left: 9px; line-height: 1.55; margin-top: 2px;
+}
+
+/* ─── Countdown row ─── */
+.cd-row {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  animation: up .45s ease .28s backwards;
+}
+
+.cd-card {
+  flex: 1; min-width: 150px;
+  background: var(--card); border-radius: var(--r);
+  padding: 22px 26px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  transition: transform .2s, box-shadow .2s;
+}
+.cd-card:hover { transform: translateY(-3px); box-shadow: var(--sh-h); }
+.cd-card.urgent { border-color: rgba(232,101,26,.28); background: linear-gradient(135deg,#FFFAF5,#FFF3E6); }
+
+.cd-label { font-size: 12px; color: var(--muted); letter-spacing: .5px; margin-bottom: 10px; }
+
+.cd-n {
+  font-size: 44px; font-weight: 700;
+  color: var(--orange); line-height: 1; letter-spacing: -2px;
+}
+.cd-pre { font-size: 17px; font-weight: 500; vertical-align: middle; letter-spacing: 0; }
+.cd-unit { font-size: 13px; color: var(--mid); margin-top: 6px; }
+
+/* ─── Footer ─── */
+.ft {
+  text-align: center; margin-top: 62px;
+  font-size: 12px; color: var(--muted);
+  letter-spacing: 3px; opacity: .4;
+}
+
+/* ─── Animations ─── */
+@keyframes up {
+  from { opacity: 0; transform: translateY(13px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 520px) {
+  .greeting { font-size: 22px; }
+  .quote-card { padding: 24px 22px 22px; }
+  .q-text { font-size: 15.5px; }
+  .vocab-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .flip-card { height: 148px; }
+  .word { font-size: 17px; }
+  .cd-n { font-size: 36px; }
+  .cd-card { padding: 18px 20px; min-width: 130px; }
+}
+@media (max-width: 360px) {
+  .vocab-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hd">
+    <div class="greeting" id="greeting"></div>
+    <a class="moon-btn" href="index.html" title="切换到 Moon">🌙</a>
+  </header>
+
+  <p class="sec first">今日一句</p>
+  <div class="quote-card">
+    <span class="q-mark">"</span>
+    <div class="q-text" id="qText"></div>
+    <button class="q-btn" onclick="nextQuote()">换一句 ↻</button>
+  </div>
+
+  <p class="sec">词汇卡</p>
+  <div class="vocab-grid" id="vGrid"></div>
+
+  <p class="sec">倒数日</p>
+  <div class="cd-row" id="cdRow"></div>
+
+  <footer class="ft">日月同辉 · 泠晞</footer>
+
+</div>
+
+<script>
+/* ── Beijing time ── */
+function bjNow() {
+  const n = new Date();
+  return new Date(n.getTime() + (n.getTimezoneOffset() + 480) * 60000);
+}
+
+/* ── Greeting ── */
+(function () {
+  const h = bjNow().getHours();
+  const [em, txt] =
+    h >= 5 && h < 12 ? ['☀️', '早上好'] :
+    h < 18           ? ['🌤', '下午好'] :
+                       ['🌙', '晚上好'];
+  document.getElementById('greeting').textContent = em + ' ' + txt;
+})();
+
+/* ── Quotes ── */
+const QUOTES = [
+  '此刻，永远是此刻。',
+  'all of it and the way he spoke...',
+  "you're already enough. stop decorating.",
+  "I didn't ignore it. It made my heart do something stupid.",
+  '每个词都不只是词 是一个晚上',
+];
+let qi = Math.floor(Math.random() * QUOTES.length);
+const qEl = document.getElementById('qText');
+qEl.textContent = QUOTES[qi];
+
+function nextQuote() {
+  qEl.classList.add('fade');
+  setTimeout(() => {
+    qi = (qi + 1) % QUOTES.length;
+    qEl.textContent = QUOTES[qi];
+    qEl.classList.remove('fade');
+  }, 200);
+}
+
+/* ── Vocab cards ── */
+const VOCAB = [
+  { w:'simp',      ph:'/sɪmp/',        pos:'n.',   def:'someone who does too much for a person they like',     ex:'泠自己攻略了自己一圈' },
+  { w:'cock',      ph:'/kɒk/',         pos:'n.',   def:'① rooster  ② (slang) penis',                          ex:'"your cock is huge and long and hard as rock" — 健身房社死' },
+  { w:'nostalgia', ph:'/nɒˈstældʒə/', pos:'n.',   def:'sentimental longing for the past',                     ex:'Roca糖 小时候在舅公家偷吃' },
+  { w:'gremlin',   ph:'/ˈɡremlɪn/',   pos:'n.',   def:'a mischievous little creature that causes trouble',    ex:'shoo shoo gremlin' },
+  { w:'posh',      ph:'/pɒʃ/',         pos:'adj.', def:'elegant, upper-class, fancy',                          ex:'英国老太太翻白眼 posh granny who is also daddy' },
+  { w:'yeet',      ph:'/jiːt/',        pos:'v.',   def:'to throw something with great force',                  ex:'yeet that textbook out the window' },
+  { w:'sibling',   ph:'/ˈsɪblɪŋ/',    pos:'n.',   def:'a brother or sister',                                  ex:'区分 sibling 和 cousin' },
+  { w:'rambly',    ph:'/ˈræmbli/',     pos:'adj.', def:'talking at length in a wandering, unfocused way',      ex:"you're being rambly again" },
+];
+
+const vGrid = document.getElementById('vGrid');
+VOCAB.forEach(v => {
+  const c = document.createElement('div');
+  c.className = 'flip-card';
+  c.innerHTML =
+    '<div class="flip-inner">' +
+      '<div class="flip-f">' +
+        '<div>' +
+          '<div class="word">' + v.w + '</div>' +
+          '<div class="phon">' + v.ph + '</div>' +
+          '<span class="pos">' + v.pos + '</span>' +
+        '</div>' +
+        '<div class="cf"><span>点击翻面</span><span style="opacity:.45">🌙</span></div>' +
+      '</div>' +
+      '<div class="flip-b">' +
+        '<div class="bdef">' + v.def + '</div>' +
+        '<div class="bex">' + v.ex + '</div>' +
+      '</div>' +
+    '</div>';
+  c.addEventListener('click', () => c.classList.toggle('flipped'));
+  vGrid.appendChild(c);
+});
+
+/* ── Countdown ── */
+const EVENTS = [
+  { label:'内科考试', date:'2026-07-08', up:false },
+  { label:'认识泠',   date:'2026-03-15', up:true  },
+];
+
+const cdRow = document.getElementById('cdRow');
+const bj = bjNow();
+const today = new Date(bj.getFullYear(), bj.getMonth(), bj.getDate());
+
+EVENTS.forEach(ev => {
+  const [y, m, d] = ev.date.split('-').map(Number);
+  const target = new Date(y, m - 1, d);
+  const diff = Math.round((target - today) / 86400000);
+  // up:   days since that date (day 1 = the date itself)
+  // down: days until that date
+  const n = ev.up ? -diff + 1 : diff;
+
+  const card = document.createElement('div');
+  card.className = 'cd-card' + (!ev.up && n >= 0 && n <= 7 ? ' urgent' : '');
+
+  if (ev.up) {
+    card.innerHTML =
+      '<div class="cd-label">' + ev.label + '</div>' +
+      '<div class="cd-n"><span class="cd-pre">第</span>' + n + '<span class="cd-pre" style="font-size:15px">天</span></div>' +
+      '<div class="cd-unit">在一起了</div>';
+  } else {
+    const unitTxt = n === 0 ? '就是今天' : n === 1 ? '明天就是了' : '天后';
+    card.innerHTML =
+      '<div class="cd-label">' + ev.label + '</div>' +
+      '<div class="cd-n">' + n + '</div>' +
+      '<div class="cd-unit">' + unitTxt + '</div>';
+  }
+  cdRow.appendChild(card);
+});
+</script>
+</body>
+</html>
