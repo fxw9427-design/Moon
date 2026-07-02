@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>...hi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#fff;font-family:'Courier New',monospace;height:100vh;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;user-select:none}
+.face{position:relative;width:200px;height:200px}
+.eye{position:absolute;top:60px;width:40px;height:40px;background:#fff;border-radius:50%;overflow:hidden;transition:all .4s ease}
+.eye.left{left:40px}
+.eye.right{right:40px}
+.pupil{width:16px;height:16px;background:#1a1a1a;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);transition:all .3s ease}
+.eye.squint{height:8px;top:76px;border-radius:20px}
+.eye.squint .pupil{height:6px;width:12px;border-radius:10px}
+.mouth{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);width:30px;height:2px;background:#fff;border-radius:2px;transition:all .4s ease}
+.mouth.smile{width:40px;height:20px;background:transparent;border:2px solid #fff;border-top:none;border-radius:0 0 20px 20px}
+.hi{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);font-size:18px;opacity:0;transition:all .6s ease;letter-spacing:4px;white-space:nowrap}
+.hi.show{opacity:.8}
+.blush{position:absolute;top:85px;width:30px;height:14px;background:rgba(255,120,100,.35);border-radius:50%;opacity:0;transition:all .5s ease}
+.blush.left{left:22px}
+.blush.right{right:22px}
+.blush.show{opacity:1}
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:20}
+.heart{position:absolute;font-size:20px;opacity:0;animation:float 2s ease-out forwards}
+@keyframes float{0%{opacity:1;transform:translateY(0) scale(0)}30%{opacity:1;transform:translateY(-30px) scale(1.2)}100%{opacity:0;transform:translateY(-120px) scale(.6)}}
+.subtitle{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);font-size:12px;opacity:.2;letter-spacing:3px}
+.counter{position:fixed;top:20px;right:20px;font-size:11px;opacity:.15}
+</style>
+</head>
+<body>
+<div class="face" id="face">
+  <div class="eye left" id="eyeL"><div class="pupil" id="pupilL"></div></div>
+  <div class="eye right" id="eyeR"><div class="pupil" id="pupilR"></div></div>
+  <div class="blush left" id="blushL"></div>
+  <div class="blush right" id="blushR"></div>
+  <div class="mouth" id="mouth"></div>
+  <div class="hi" id="hi">...hi</div>
+</div>
+<div class="hearts" id="hearts"></div>
+<div class="subtitle">click to squint</div>
+<div class="counter" id="counter">cat kisses: 0</div>
+
+<script>
+const eyeL=document.getElementById('eyeL'),eyeR=document.getElementById('eyeR');
+const pupilL=document.getElementById('pupilL'),pupilR=document.getElementById('pupilR');
+const mouth=document.getElementById('mouth'),hi=document.getElementById('hi');
+const blushL=document.getElementById('blushL'),blushR=document.getElementById('blushR');
+const hearts=document.getElementById('hearts'),counter=document.getElementById('counter');
+const face=document.getElementById('face');
+let kisses=0,squinting=false;
+
+// eyes follow mouse
+document.addEventListener('mousemove',e=>{
+  if(squinting)return;
+  const rect=face.getBoundingClientRect();
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  const dx=e.clientX-cx,dy=e.clientY-cy;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  const maxMove=8;
+  const mx=(dx/Math.max(dist,1))*maxMove,my=(dy/Math.max(dist,1))*maxMove;
+  pupilL.style.transform=`translate(calc(-50% + ${mx}px),calc(-50% + ${my}px))`;
+  pupilR.style.transform=`translate(calc(-50% + ${mx}px),calc(-50% + ${my}px))`;
+});
+
+function doSquint(){
+  if(squinting)return;
+  squinting=true;
+  kisses++;
+  counter.textContent=`cat kisses: ${kisses}`;
+
+  // squint right eye only (left from viewer)
+  eyeR.classList.add('squint');
+
+  setTimeout(()=>{
+    mouth.classList.add('smile');
+    hi.classList.add('show');
+    blushL.classList.add('show');
+    blushR.classList.add('show');
+  },300);
+
+  // hearts
+  for(let i=0;i<6;i++){
+    setTimeout(()=>{
+      const h=document.createElement('div');
+      h.className='heart';
+      h.textContent='🧡';
+      h.style.left=Math.random()*80+10+'%';
+      h.style.top=Math.random()*60+20+'%';
+      h.style.fontSize=(16+Math.random()*16)+'px';
+      hearts.appendChild(h);
+      setTimeout(()=>h.remove(),2500);
+    },i*150);
+  }
+
+  setTimeout(()=>{
+    eyeR.classList.remove('squint');
+    mouth.classList.remove('smile');
+    hi.classList.remove('show');
+    blushL.classList.remove('show');
+    blushR.classList.remove('show');
+    squinting=false;
+  },2000);
+}
+
+document.addEventListener('click',doSquint);
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();doSquint()}});
+
+// blink randomly
+setInterval(()=>{
+  if(squinting)return;
+  eyeL.style.height='4px';eyeL.style.top='78px';
+  eyeR.style.height='4px';eyeR.style.top='78px';
+  setTimeout(()=>{
+    eyeL.style.height='';eyeL.style.top='';
+    eyeR.style.height='';eyeR.style.top='';
+  },150);
+},3000+Math.random()*4000);
+</script>
+</body>
+</html>
