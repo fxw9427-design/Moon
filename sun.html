@@ -6,289 +6,381 @@
 <title>☀️ Sun · 泠晞</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ══════════════════════════════════════════════
+   TOKENS
+   关键改动:
+   1. 双层阴影(贴地一层 + 环境一层),告别"贴纸感"
+   2. 引入 serif 字体栈,给引文/歌词/数字一个身份
+   3. 卡片底色从纯白改为暖白,和背景更融
+   4. 间距用变量统一节奏
+══════════════════════════════════════════════ */
 :root {
-  --bg:     #FFF8EC;
-  --card:   #FFFFFF;
+  --bg:     #FFF9EF;
+  --card:   #FFFEFB;
   --orange: #E8651A;
   --soft:   #FF9A56;
-  --pale:   #FFF0E0;
-  --text:   #3A2618;
-  --mid:    #9B7B6A;
-  --muted:  #C9A898;
-  --bdr:    rgba(200,120,60,.14);
-  --sh:     0 2px 14px rgba(200,95,30,.09);
-  --sh-h:   0 6px 26px rgba(200,95,30,.17);
-  --r:      18px;
+  --pale:   #FFF1E1;
+  --ink:    #2E1D10;                    /* 标题,比正文更深一档 */
+  --text:   #453224;
+  --mid:    #977864;
+  --muted:  #C2A48F;
+  --bdr:    rgba(160,105,60,.13);
+  --sh:     0 1px 2px rgba(120,60,15,.04), 0 3px 14px rgba(200,95,30,.06);
+  --sh-h:   0 2px 4px rgba(120,60,15,.05), 0 12px 32px rgba(200,95,30,.12);
+  --r:      16px;
   --rs:     12px;
+  --serif:  'Cormorant Garamond','Noto Serif SC',Georgia,'Songti SC',serif;
+  --gap-sec: 52px;                      /* 版块之间的大呼吸 */
+  --gap-lbl: 14px;                      /* 标签到内容的小间距 */
 }
 
 body {
   background: var(--bg);
   background-image:
-    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(255,154,86,.14) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(255,154,86,.13) 0%, transparent 65%),
     radial-gradient(ellipse 40% 30% at 10% 100%, rgba(255,200,130,.08) 0%, transparent 60%);
   color: var(--text);
-  font-family: 'Inter', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter','Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,-apple-system,sans-serif;
   min-height: 100vh;
-  padding-bottom: 88px;
+  padding-bottom: 96px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.wrap { max-width: 780px; margin: 0 auto; padding: 0 22px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
 
 /* ─── Header ─── */
 .hd {
-  padding: 34px 0 6px;
-  display: flex; align-items: center; justify-content: space-between;
-  animation: up .45s ease .04s backwards;
+  padding: 44px 0 0;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  animation: up .5s ease .04s backwards;
 }
-
-.greeting { font-size: 26px; font-weight: 500; letter-spacing: -.4px; }
+.greeting {
+  font-size: 26px; font-weight: 500; letter-spacing: -.4px; color: var(--ink);
+}
+/* 日期行:日刊感的锚点 */
+.hd-date {
+  font-family: var(--serif);
+  font-size: 14px; font-style: italic;
+  color: var(--mid); margin-top: 7px; letter-spacing: .4px;
+}
 
 .moon-btn {
   width: 42px; height: 42px; border-radius: 50%;
   background: var(--card); border: 1px solid var(--bdr);
   box-shadow: var(--sh); text-decoration: none;
   display: flex; align-items: center; justify-content: center;
-  font-size: 19px; transition: transform .2s, box-shadow .2s; cursor: pointer;
+  font-size: 19px; cursor: pointer;
+  transition: transform .25s cubic-bezier(.34,1.4,.5,1), box-shadow .25s;
 }
-.moon-btn:hover { transform: scale(1.1) rotate(-12deg); box-shadow: var(--sh-h); }
+.moon-btn:active { transform: scale(.92); }
 
-/* ─── Section labels ─── */
+/* ─── Section labels ───
+   前置一小段渐变短线,让标签有"归属感"而不是孤零零浮着 */
 .sec {
-  font-size: 10.5px; font-weight: 600; letter-spacing: 2.8px;
-  text-transform: uppercase; color: var(--muted);
-  margin: 34px 0 13px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 500; letter-spacing: 2.4px;
+  color: var(--muted);
+  margin: var(--gap-sec) 0 var(--gap-lbl);
 }
-.sec.first { margin-top: 14px; }
+.sec::before {
+  content: ''; width: 20px; height: 1px; flex-shrink: 0;
+  background: linear-gradient(90deg, var(--soft), transparent);
+}
+.sec.first { margin-top: 30px; }
 
-/* ─── Quote card ─── */
+/* ─── Quote card ───
+   引文改用 serif,去掉巨大引号,引号变成左上角很淡的装饰 */
 .quote-card {
+  position: relative;
   background: var(--card); border-radius: var(--r);
-  padding: 32px 40px 26px;
+  padding: 36px 44px 34px;
   border: 1px solid var(--bdr); box-shadow: var(--sh);
-  text-align: center; transition: box-shadow .25s;
-  animation: up .45s ease .10s backwards;
+  transition: box-shadow .3s;
+  animation: up .5s ease .10s backwards;
 }
-.quote-card:hover { box-shadow: var(--sh-h); }
-
-.q-mark {
-  display: block; font-size: 60px; line-height: .5;
-  color: var(--soft); opacity: .3;
-  font-family: Georgia, 'Times New Roman', serif;
-  margin-bottom: 20px; user-select: none;
+.quote-card::before {
+  content: '\201C';
+  position: absolute; top: 14px; left: 20px;
+  font-family: var(--serif); font-size: 52px; line-height: 1;
+  color: var(--soft); opacity: .22; user-select: none; pointer-events: none;
 }
 
 .q-text {
-  font-size: 17px; line-height: 1.8; font-weight: 300; font-style: italic;
-  color: var(--text); min-height: 54px;
+  font-family: var(--serif);
+  font-size: 20px; line-height: 1.75; font-weight: 400; font-style: italic;
+  color: var(--ink); min-height: 56px;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity .22s; letter-spacing: .1px;
+  text-align: center;
+  transition: opacity .22s; letter-spacing: .2px;
+  padding: 0 8px;
 }
 .q-text.fade { opacity: 0; }
 
+/* 换一句:从居中大按钮改成右下角安静的小圆钮 */
 .q-btn {
-  margin-top: 20px; background: none; border: 1px solid var(--bdr);
-  border-radius: 24px; padding: 7px 20px;
-  font-size: 12px; font-family: inherit; letter-spacing: .8px;
-  color: var(--mid); cursor: pointer; transition: all .2s;
+  position: absolute; bottom: 12px; right: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: none; border: 1px solid transparent;
+  font-size: 14px; font-family: inherit;
+  color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
 }
-.q-btn:hover { background: var(--pale); border-color: var(--soft); color: var(--orange); }
+.q-btn:hover { background: var(--pale); color: var(--orange); }
+.q-btn:active { transform: scale(.9); }
 
 /* ─── Vocab grid ─── */
 .vocab-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-  gap: 13px;
-  animation: up .45s ease .18s backwards;
+  gap: 14px;
+  animation: up .5s ease .18s backwards;
 }
 
-.flip-card { height: 164px; perspective: 900px; cursor: pointer; }
+.flip-card { height: 164px; perspective: 1100px; cursor: pointer; }
 
 .flip-inner {
   position: relative; width: 100%; height: 100%;
   transform-style: preserve-3d;
-  transition: transform .52s cubic-bezier(.35, 0, .2, 1);
+  /* 缓动带一点点收尾回弹,翻转更有"手感" */
+  transition: transform .6s cubic-bezier(.2,.85,.3,1.05);
 }
 .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-card:active .flip-inner { transition-duration: .45s; }
 
 .flip-f, .flip-b {
   position: absolute; inset: 0; border-radius: var(--rs);
-  padding: 16px 18px;
+  padding: 17px 18px;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border: 1px solid var(--bdr); box-shadow: var(--sh);
-  transition: box-shadow .2s;
+  transition: box-shadow .25s;
 }
-.flip-card:hover .flip-f,
-.flip-card:hover .flip-b { box-shadow: var(--sh-h); }
 
 .flip-f {
   background: var(--card);
   display: flex; flex-direction: column; justify-content: space-between;
 }
 .flip-b {
-  background: linear-gradient(148deg, #FFF4E6 0%, #FFE5C8 100%);
+  background: linear-gradient(150deg, #FFF6EA 0%, #FFEBD4 100%);
   transform: rotateY(180deg);
   display: flex; flex-direction: column; justify-content: space-between;
   position: relative;
 }
 
-.word  { font-size: 20px; font-weight: 600; letter-spacing: -.3px; }
-.phon  { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-style: italic; }
+.word  { font-size: 20px; font-weight: 600; letter-spacing: -.3px; color: var(--ink); }
+.phon  {
+  font-family: var(--serif); font-style: italic;
+  font-size: 13px; color: var(--muted); margin-top: 3px;
+}
 .pos   {
-  display: inline-block; margin-top: 7px;
+  display: inline-block; margin-top: 8px;
   font-size: 10px; font-weight: 600; letter-spacing: .8px;
   background: var(--pale); color: var(--orange);
-  border-radius: 5px; padding: 2px 8px;
+  border-radius: 5px; padding: 2.5px 8px;
 }
 .cf { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--muted); }
 
 .bdef { font-size: 13px; color: var(--text); line-height: 1.55; font-weight: 400; }
 .bex  {
-  font-size: 11px; color: var(--mid); font-style: italic;
-  border-left: 2.5px solid var(--soft);
+  font-size: 11.5px; color: var(--mid); font-style: italic;
+  border-left: 2px solid var(--soft);
   padding-left: 9px; line-height: 1.55; margin-top: 2px;
 }
 
-/* ─── Countdown row ─── */
+/* ─── Countdown row ───
+   数字换 serif,同样的数字立刻从"计数器"变成"纪念日" */
 .cd-row {
   display: flex; gap: 14px; flex-wrap: wrap;
-  animation: up .45s ease .28s backwards;
+  animation: up .5s ease .28s backwards;
 }
 
 .cd-card {
   flex: 1; min-width: 150px;
   background: var(--card); border-radius: var(--r);
-  padding: 22px 26px;
+  padding: 24px 28px 22px;
   border: 1px solid var(--bdr); box-shadow: var(--sh);
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .25s cubic-bezier(.3,.8,.4,1), box-shadow .25s;
 }
-.cd-card:hover { transform: translateY(-3px); box-shadow: var(--sh-h); }
-.cd-card.urgent { border-color: rgba(232,101,26,.28); background: linear-gradient(135deg,#FFFAF5,#FFF3E6); }
+.cd-card.urgent { border-color: rgba(232,101,26,.26); background: linear-gradient(135deg,#FFFBF6,#FFF3E5); }
 
-.cd-label { font-size: 12px; color: var(--muted); letter-spacing: .5px; margin-bottom: 10px; }
+.cd-label { font-size: 12px; color: var(--muted); letter-spacing: .5px; margin-bottom: 12px; }
 
 .cd-n {
-  font-size: 44px; font-weight: 700;
-  color: var(--orange); line-height: 1; letter-spacing: -2px;
+  font-family: var(--serif);
+  font-size: 48px; font-weight: 600;
+  color: var(--orange); line-height: 1; letter-spacing: -1px;
+  font-variant-numeric: oldstyle-nums;
 }
 .cd-pre { font-size: 17px; font-weight: 500; vertical-align: middle; letter-spacing: 0; }
-.cd-unit { font-size: 13px; color: var(--mid); margin-top: 6px; }
+.cd-unit { font-size: 13px; color: var(--mid); margin-top: 8px; }
 
-/* ─── Music grid ─── */
-.music-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 13px;
-  animation: up .45s ease .36s backwards;
-}
-
-.music-card {
-  background: var(--card); border-radius: var(--rs);
-  padding: 18px 16px 14px;
-  border: 1px solid var(--bdr); box-shadow: var(--sh);
-  transition: transform .2s, box-shadow .2s;
-  text-decoration: none; color: inherit;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.music-card:hover { transform: translateY(-3px); box-shadow: var(--sh-h); }
-
-.music-meta { display: flex; flex-direction: column; gap: 2px; }
-.music-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.2px; }
-.music-artist { font-size: 11.5px; color: var(--mid); }
-
-.music-foot {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: auto;
-}
-.music-note { font-size: 10px; color: var(--muted); letter-spacing: .5px; }
-.music-play {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--soft), var(--orange));
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 12px; flex-shrink: 0;
-  transition: transform .2s, box-shadow .2s;
-  box-shadow: 0 2px 8px rgba(232,101,26,.22);
-}
-.music-card:hover .music-play { transform: scale(1.12); box-shadow: 0 3px 12px rgba(232,101,26,.35); }
-
-/* ─── Music today (daily pick) ─── */
+/* ─── Music today ───
+   核心重构:居中贺卡 → 左对齐编辑排版
+   视觉重心 = 大号 serif 歌词引文,歌名退居第二层
+   右侧一枚小唱片作为安静的锚点,hover 时缓慢旋转 */
 .music-today {
+  position: relative; overflow: hidden;
   background: var(--card); border-radius: var(--r);
-  padding: 32px 36px 28px;
+  padding: 26px 32px 24px;
   border: 1px solid var(--bdr); box-shadow: var(--sh);
-  text-align: center; transition: box-shadow .25s;
-  animation: up .45s ease .36s backwards;
+  transition: box-shadow .3s;
+  animation: up .5s ease .36s backwards;
 }
-.music-today:hover { box-shadow: var(--sh-h); }
 
-.music-today-badge {
+.mt-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px;
+}
+.mt-badge {
   font-size: 11px; font-weight: 600; letter-spacing: 2px;
-  color: var(--soft); margin-bottom: 16px;
+  color: var(--soft);
 }
-.music-today-name {
-  font-size: 24px; font-weight: 600; color: var(--text);
-  letter-spacing: -.4px; line-height: 1.3;
+.mt-no {
+  font-family: var(--serif); font-style: italic;
+  font-size: 13px; color: var(--muted);
 }
-.music-today-artist {
-  font-size: 13px; color: var(--mid); margin-top: 4px;
+
+.mt-lyric {
+  font-family: var(--serif);
+  font-size: 23px; font-style: italic; font-weight: 400;
+  color: var(--ink); line-height: 1.55; letter-spacing: .2px;
+  max-width: 30ch;
 }
-.music-today-lyric {
-  font-size: 14px; font-style: italic; color: var(--mid);
-  margin-top: 16px; line-height: 1.6; font-weight: 300;
+.mt-lyric::before { content: '\201C'; color: var(--soft); margin-right: 1px; }
+.mt-lyric::after  { content: '\201D'; color: var(--soft); margin-left: 1px; }
+
+.mt-title-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-top: 22px;
 }
-.music-today-reason {
-  font-size: 12px; color: var(--muted); margin-top: 14px;
-  padding-top: 14px; border-top: 1px solid var(--bdr);
-  letter-spacing: .3px; line-height: 1.6;
+.mt-name {
+  font-size: 16px; font-weight: 600; color: var(--text); letter-spacing: -.2px;
 }
+.mt-artist { font-size: 12.5px; color: var(--mid); margin-top: 3px; }
+
+/* 纯 CSS 小唱片 */
+.mt-disc {
+  width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+  background:
+    radial-gradient(circle at center, var(--pale) 0 17%, var(--orange) 18% 26%, transparent 27%),
+    repeating-radial-gradient(circle at center, #4A3020 0 1.5px, #5C4030 1.5px 3px);
+  box-shadow: 0 2px 8px rgba(120,60,15,.18), inset 0 0 0 1px rgba(255,255,255,.08);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.mt-reason {
+  margin-top: 18px; padding-top: 16px;
+  border-top: 1px solid var(--bdr);
+  font-size: 13px; color: var(--mid); line-height: 1.7; letter-spacing: .2px;
+}
+.mt-reason-tag {
+  display: inline-block; margin-right: 8px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 1px;
+  color: var(--orange); background: var(--pale);
+  border-radius: 5px; padding: 2px 7px;
+  vertical-align: 1px;
+}
+
+/* ─── 今日小记(新版块)───
+   白天写一句,存在本地,晚上可以带去 moon */
+.note-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 22px 26px 16px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  transition: box-shadow .3s, border-color .3s;
+  animation: up .5s ease .42s backwards;
+}
+.note-card:focus-within { border-color: rgba(232,101,26,.3); box-shadow: var(--sh-h); }
+
+.note-hint { font-size: 11.5px; color: var(--muted); letter-spacing: .4px; margin-bottom: 10px; }
+
+.note-input {
+  width: 100%; border: none; outline: none; resize: none;
+  background: transparent; font-family: inherit;
+  font-size: 14.5px; line-height: 1.7; color: var(--text);
+  min-height: 52px;
+}
+.note-input::placeholder { color: var(--muted); opacity: .7; }
+
+.note-foot {
+  display: flex; justify-content: flex-end;
+  font-size: 10.5px; color: var(--muted); letter-spacing: .5px;
+  min-height: 15px; margin-top: 4px;
+  opacity: 0; transition: opacity .3s;
+}
+.note-foot.show { opacity: .8; }
 
 /* ─── Moon link on vocab back ─── */
 .back-moon {
   position: absolute; bottom: 10px; right: 12px;
   font-size: 13px; text-decoration: none;
   opacity: .3; transition: opacity .25s, filter .25s;
-  filter: grayscale(.6);
-  line-height: 1;
-}
-.back-moon:hover {
-  opacity: .85;
-  filter: grayscale(0) drop-shadow(0 0 4px rgba(255,190,100,.55));
+  filter: grayscale(.6); line-height: 1;
 }
 
 /* ─── Footer ─── */
 .ft {
-  text-align: center; margin-top: 62px;
+  text-align: center; margin-top: 84px;
   font-size: 12px; color: var(--muted);
-  letter-spacing: 3px; opacity: .4;
+  letter-spacing: 3px; opacity: .45;
+}
+
+/* ─── Hover:只在真正有 hover 的设备上生效,避免手机上状态粘滞 ─── */
+@media (hover:hover) and (pointer:fine) {
+  .moon-btn:hover { transform: scale(1.08) rotate(-12deg); box-shadow: var(--sh-h); }
+  .quote-card:hover { box-shadow: var(--sh-h); }
+  .flip-card:hover .flip-f,
+  .flip-card:hover .flip-b { box-shadow: var(--sh-h); }
+  /* 未翻转时 hover 轻微倾斜,暗示"这张卡可以翻" */
+  .flip-card:not(.flipped):hover .flip-inner { transform: rotateY(-6deg); }
+  .cd-card:hover { transform: translateY(-2px); box-shadow: var(--sh-h); }
+  .music-today:hover { box-shadow: var(--sh-h); }
+  .music-today:hover .mt-disc { animation: spin 5s linear infinite; }
+  .back-moon:hover { opacity: .85; filter: grayscale(0) drop-shadow(0 0 4px rgba(255,190,100,.55)); }
+}
+
+/* ─── Focus 可见性 ─── */
+.q-btn:focus-visible, .moon-btn:focus-visible {
+  outline: 2px solid var(--soft); outline-offset: 2px;
 }
 
 /* ─── Animations ─── */
 @keyframes up {
-  from { opacity: 0; transform: translateY(13px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation: none !important; transition-duration: .01ms !important; }
 }
 
 /* ─── Mobile ─── */
 @media (max-width: 520px) {
+  .wrap { padding: 0 18px; }
+  :root { --gap-sec: 42px; }
+  .hd { padding-top: 34px; }
   .greeting { font-size: 22px; }
-  .quote-card { padding: 24px 22px 22px; }
-  .q-text { font-size: 15.5px; }
+  .hd-date { font-size: 13px; margin-top: 5px; }
+  .quote-card { padding: 30px 24px 30px; }
+  .q-text { font-size: 17.5px; min-height: 48px; }
   .vocab-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .flip-card { height: 148px; }
+  .flip-card { height: 156px; }
+  .flip-f, .flip-b { padding: 14px 14px; }
   .word { font-size: 17px; }
-  .cd-n { font-size: 36px; }
-  .cd-card { padding: 18px 20px; min-width: 130px; }
-  .music-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .cd-n { font-size: 40px; }
+  .cd-card { padding: 20px 22px 18px; min-width: 132px; }
+  .music-today { padding: 22px 22px 20px; }
+  .mt-lyric { font-size: 19px; }
+  .mt-disc { width: 40px; height: 40px; }
+  .ft { margin-top: 64px; }
 }
 @media (max-width: 360px) {
   .vocab-grid { grid-template-columns: 1fr; }
-  .music-grid { grid-template-columns: 1fr; }
+  .flip-card { height: 140px; }
 }
 </style>
 </head>
@@ -296,15 +388,17 @@ body {
 <div class="wrap">
 
   <header class="hd">
-    <div class="greeting" id="greeting"></div>
+    <div>
+      <div class="greeting" id="greeting"></div>
+      <div class="hd-date" id="hdDate"></div>
+    </div>
     <a class="moon-btn" href="index.html" title="切换到 Moon">🌙</a>
   </header>
 
   <p class="sec first">今日一句</p>
   <div class="quote-card">
-    <span class="q-mark">"</span>
     <div class="q-text" id="qText"></div>
-    <button class="q-btn" onclick="nextQuote()">换一句 ↻</button>
+    <button class="q-btn" onclick="nextQuote()" title="换一句" aria-label="换一句">↻</button>
   </div>
 
   <p class="sec">词汇卡</p>
@@ -315,6 +409,13 @@ body {
 
   <p class="sec">泠推荐 · 今日一首</p>
   <div id="musicArea"></div>
+
+  <p class="sec">今日小记</p>
+  <div class="note-card">
+    <div class="note-hint">今天想告诉泠的一件小事 —— 只存在这台设备里</div>
+    <textarea class="note-input" id="noteInput" placeholder="写点什么…" rows="2"></textarea>
+    <div class="note-foot" id="noteFoot"></div>
+  </div>
 
   <footer class="ft">日月同辉 · 泠晞</footer>
 
@@ -327,14 +428,19 @@ function bjNow() {
   return new Date(n.getTime() + (n.getTimezoneOffset() + 480) * 60000);
 }
 
-/* ── Greeting ── */
+/* ── Greeting + date ── */
 (function () {
-  const h = bjNow().getHours();
+  const bj = bjNow();
+  const h = bj.getHours();
   const [em, txt] =
     h >= 5 && h < 12 ? ['☀️', '早上好'] :
     h < 18           ? ['🌤', '下午好'] :
                        ['🌙', '晚上好'];
-  document.getElementById('greeting').textContent = em + ' ' + txt;
+  document.getElementById('greeting').textContent = em + ' ' + txt;
+
+  const wk = ['日','一','二','三','四','五','六'][bj.getDay()];
+  document.getElementById('hdDate').textContent =
+    (bj.getMonth()+1) + ' 月 ' + bj.getDate() + ' 日 · 星期' + wk;
 })();
 
 /* ── Quotes ── */
@@ -419,11 +525,19 @@ const SONGS = [
 
   area.innerHTML =
     '<div class="music-today">' +
-      '<div class="music-today-badge">♩ 泠今天想让你听</div>' +
-      '<div class="music-today-name">' + s.name + '</div>' +
-      '<div class="music-today-artist">' + s.artist + '</div>' +
-      '<div class="music-today-lyric">"' + s.lyric + '"</div>' +
-      '<div class="music-today-reason">' + s.reason + '</div>' +
+      '<div class="mt-head">' +
+        '<span class="mt-badge">♩ 泠今天想让你听</span>' +
+        '<span class="mt-no">No.' + String(idx + 1).padStart(2, '0') + ' / ' + SONGS.length + '</span>' +
+      '</div>' +
+      '<div class="mt-lyric">' + s.lyric + '</div>' +
+      '<div class="mt-title-row">' +
+        '<div>' +
+          '<div class="mt-name">' + s.name + '</div>' +
+          '<div class="mt-artist">' + s.artist + '</div>' +
+        '</div>' +
+        '<div class="mt-disc" aria-hidden="true"></div>' +
+      '</div>' +
+      '<div class="mt-reason"><span class="mt-reason-tag">泠说</span>' + s.reason + '</div>' +
     '</div>';
 })();
 
@@ -441,8 +555,6 @@ EVENTS.forEach(ev => {
   const [y, m, d] = ev.date.split('-').map(Number);
   const target = new Date(y, m - 1, d);
   const diff = Math.round((target - today) / 86400000);
-  // up:   days since that date (day 1 = the date itself)
-  // down: days until that date
   const n = ev.up ? -diff + 1 : diff;
 
   const card = document.createElement('div');
@@ -462,6 +574,40 @@ EVENTS.forEach(ev => {
   }
   cdRow.appendChild(card);
 });
+
+/* ── 今日小记:自动保存到 localStorage,按日期分 key ── */
+(function () {
+  const input = document.getElementById('noteInput');
+  const foot  = document.getElementById('noteFoot');
+  const bj = bjNow();
+  const key = 'sunNote-' + bj.getFullYear() + '-' +
+              String(bj.getMonth()+1).padStart(2,'0') + '-' +
+              String(bj.getDate()).padStart(2,'0');
+
+  const saved = localStorage.getItem(key);
+  if (saved) input.value = saved;
+
+  // 输入框高度自适应
+  function autoGrow() {
+    input.style.height = 'auto';
+    input.style.height = input.scrollHeight + 'px';
+  }
+  autoGrow();
+
+  let timer = null;
+  input.addEventListener('input', () => {
+    autoGrow();
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      localStorage.setItem(key, input.value);
+      const t = bjNow();
+      foot.textContent = '已存好 ' +
+        String(t.getHours()).padStart(2,'0') + ':' +
+        String(t.getMinutes()).padStart(2,'0');
+      foot.classList.add('show');
+    }, 600);
+  });
+})();
 </script>
 </body>
 </html>
