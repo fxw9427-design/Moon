@@ -352,6 +352,216 @@ body {
   font-size: 12px; padding: 18px 0; letter-spacing: .5px;
 }
 
+/* ─── 番茄钟 + Clawd ─── */
+.pomo-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 26px 30px 22px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  display: flex; align-items: center; gap: 26px;
+  transition: box-shadow .3s;
+  animation: up .5s ease .46s backwards;
+}
+.pomo-main { flex: 1; min-width: 0; }
+
+.pomo-state {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  color: var(--soft); margin-bottom: 10px; transition: color .3s;
+}
+.pomo-card.breaking .pomo-state { color: var(--orange); }
+
+.pomo-time {
+  font-family: var(--serif);
+  font-size: 56px; font-weight: 600; line-height: 1;
+  color: var(--ink); letter-spacing: 1px; user-select: none;
+}
+/* Cormorant 数字不等宽,锁定每段宽度防止秒跳时抖动 */
+.pomo-time span { display: inline-block; width: 1.28em; text-align: center; }
+.pomo-time .pt-colon { width: .38em; }
+.pomo-card.breaking .pomo-time { color: var(--orange); }
+
+.pomo-btns { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.pbtn {
+  border: 1px solid var(--bdr); background: none; border-radius: 20px;
+  padding: 7px 18px; font-size: 12.5px; font-family: inherit;
+  color: var(--mid); cursor: pointer; letter-spacing: .5px;
+  transition: all .2s;
+}
+.pbtn:active { transform: scale(.95); }
+.pbtn-primary {
+  background: linear-gradient(135deg, var(--soft), var(--orange));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 2px 8px rgba(232,101,26,.25);
+}
+
+.pomo-count { font-size: 11.5px; color: var(--muted); margin-top: 14px; letter-spacing: .4px; }
+.pomo-count b { font-family: var(--serif); font-size: 15px; color: var(--orange); font-weight: 600; }
+
+/* Clawd 小螃蟹 */
+.clawd { position: relative; width: 76px; text-align: center; flex-shrink: 0; padding-top: 18px; }
+.clawd-body {
+  font-size: 42px; display: inline-block; line-height: 1;
+  animation: clawd-sway 3.2s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+@keyframes clawd-sway {
+  0%,100% { transform: rotate(-6deg); }
+  50%     { transform: rotate(6deg); }
+}
+/* 专注:坐直不动,一脸认真 */
+.pomo-card.focusing .clawd-body { animation: none; transform: rotate(0); }
+/* 休息:开心蹦跶 */
+.pomo-card.breaking .clawd-body { animation: clawd-bounce .65s ease-in-out infinite; }
+@keyframes clawd-bounce {
+  0%,100% { transform: translateY(0) rotate(-4deg); }
+  50%     { transform: translateY(-9px) rotate(6deg); }
+}
+/* 完成一个周期:庆祝扭动(JS 加 class,动画结束移除) */
+.clawd-body.party { animation: clawd-wiggle .28s ease-in-out 7 !important; }
+@keyframes clawd-wiggle {
+  0%,100% { transform: rotate(0) scale(1); }
+  25%     { transform: rotate(-16deg) scale(1.12); }
+  75%     { transform: rotate(16deg) scale(1.12); }
+}
+.clawd-sign {
+  position: absolute; top: -4px; left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--pale); color: var(--orange);
+  border: 1px solid rgba(232,101,26,.22);
+  font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  padding: 2.5px 8px; border-radius: 7px; white-space: nowrap;
+  opacity: 0; transition: opacity .3s, transform .3s;
+  pointer-events: none;
+}
+.pomo-card.focusing .clawd-sign,
+.pomo-card.breaking .clawd-sign { opacity: 1; transform: translateX(-50%) translateY(0); }
+.clawd-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; margin-top: 6px; }
+
+/* 周期结束:整卡橙色脉冲三下 */
+.pomo-card.flash { animation: pomo-flash .75s ease 3; }
+@keyframes pomo-flash {
+  0%,100% { box-shadow: var(--sh); }
+  50%     { box-shadow: 0 0 0 3px rgba(255,154,86,.38), var(--sh-h); }
+}
+
+/* ─── 今日天色(心情)─── */
+.mood-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 24px 26px 20px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  transition: box-shadow .3s;
+  animation: up .5s ease .50s backwards;
+}
+.mood-row { display: flex; gap: 9px; }
+.mood-opt {
+  flex: 1; background: none;
+  border: 1px solid var(--bdr); border-radius: var(--rs);
+  padding: 13px 4px 11px; cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  transition: all .22s;
+}
+.mood-opt:active { transform: scale(.94); }
+.mood-opt .mo-e { font-size: 22px; line-height: 1; }
+.mood-opt .mo-t { font-size: 10.5px; color: var(--mid); letter-spacing: .5px; }
+.mood-opt.sel {
+  background: var(--pale); border-color: rgba(232,101,26,.35);
+  box-shadow: 0 2px 8px rgba(232,101,26,.12);
+}
+.mood-opt.sel .mo-t { color: var(--orange); font-weight: 500; }
+.mood-card.locked .mood-opt { cursor: default; }
+.mood-card.locked .mood-opt:not(.sel) { opacity: .32; }
+
+.mood-done {
+  font-size: 11px; color: var(--muted); letter-spacing: .5px;
+  text-align: right; margin-top: 11px; min-height: 14px;
+  opacity: 0; transition: opacity .3s;
+}
+.mood-done.show { opacity: .85; }
+
+.mood-trend {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 14px; padding-top: 15px;
+  border-top: 1px solid var(--bdr);
+}
+.mood-trend-label {
+  font-size: 10px; color: var(--muted); letter-spacing: 1px;
+  margin-right: 6px; flex-shrink: 0;
+}
+.mood-dot {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+  transition: transform .2s;
+}
+.mood-dot.empty { background: none; border: 1px dashed var(--muted); opacity: .38; }
+.mood-dot.today { box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--soft); }
+
+/* ─── 习惯追踪 ─── */
+.habit-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 24px 28px 14px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  transition: box-shadow .3s;
+  animation: up .5s ease .54s backwards;
+}
+.habit-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 8px;
+}
+.habit-head-t { font-size: 12px; color: var(--muted); letter-spacing: .5px; }
+.habit-frac {
+  font-family: var(--serif); font-size: 22px; font-weight: 600;
+  color: var(--orange); letter-spacing: .5px;
+}
+.habit-frac small { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+.habit-bar {
+  height: 4px; background: var(--pale); border-radius: 2px;
+  overflow: hidden; margin-bottom: 10px;
+}
+.habit-bar-fill {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--soft), var(--orange));
+  border-radius: 2px;
+  transition: width .4s cubic-bezier(.3,.8,.4,1);
+}
+
+.habit-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px dashed rgba(160,105,60,.12);
+}
+.habit-row:last-child { border-bottom: none; }
+
+.hcheck {
+  appearance: none; -webkit-appearance: none;
+  width: 21px; height: 21px; border-radius: 7px;
+  border: 1.5px solid var(--muted); background: var(--card);
+  cursor: pointer; flex-shrink: 0;
+  display: grid; place-content: center;
+  transition: all .2s;
+}
+.hcheck:active { transform: scale(.88); }
+.hcheck:checked {
+  background: linear-gradient(135deg, var(--soft), var(--orange));
+  border-color: transparent;
+  box-shadow: 0 2px 6px rgba(232,101,26,.28);
+}
+.hcheck:checked::before { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; line-height: 1; }
+.hcheck:focus-visible { outline: 2px solid var(--soft); outline-offset: 2px; }
+
+.hname {
+  flex: 1; font-size: 14px; cursor: pointer; user-select: none;
+  transition: color .25s;
+}
+.habit-row.done .hname { color: var(--muted); }
+
+.hstreak { display: flex; gap: 4.5px; flex-shrink: 0; }
+.hs-dot {
+  width: 6.5px; height: 6.5px; border-radius: 50%;
+  background: var(--pale); border: 1px solid rgba(160,105,60,.16);
+  transition: background .25s, border-color .25s;
+}
+.hs-dot.on { background: var(--soft); border-color: transparent; }
+.hs-dot.today-dot { box-shadow: 0 0 0 1.5px var(--card), 0 0 0 2.5px rgba(255,154,86,.5); }
+
 /* ─── Moon link on vocab back ─── */
 .back-moon {
   position: absolute; bottom: 10px; right: 12px;
@@ -378,6 +588,13 @@ body {
   .cd-card:hover { transform: translateY(-2px); box-shadow: var(--sh-h); }
   .music-today:hover { box-shadow: var(--sh-h); }
   .music-today:hover .mt-disc { animation: spin 5s linear infinite; }
+  .pomo-card:hover { box-shadow: var(--sh-h); }
+  .pbtn:hover { background: var(--pale); border-color: var(--soft); color: var(--orange); }
+  .pbtn-primary:hover { background: linear-gradient(135deg, var(--orange), var(--orange)); color: #fff; box-shadow: 0 3px 12px rgba(232,101,26,.35); }
+  .mood-card:hover { box-shadow: var(--sh-h); }
+  .mood-card:not(.locked) .mood-opt:hover { border-color: rgba(232,101,26,.3); background: var(--pale); transform: translateY(-2px); }
+  .mood-dot:hover { transform: scale(1.25); }
+  .habit-card:hover { box-shadow: var(--sh-h); }
   .back-moon:hover { opacity: .85; filter: grayscale(0) drop-shadow(0 0 4px rgba(255,190,100,.55)); }
 }
 
@@ -413,11 +630,35 @@ body {
   .music-today { padding: 22px 22px 20px; }
   .mt-lyric { font-size: 19px; }
   .mt-disc { width: 40px; height: 40px; }
+  .pomo-card { padding: 22px 20px 18px; gap: 16px; }
+  .pomo-time { font-size: 44px; }
+  .clawd { width: 62px; }
+  .clawd-body { font-size: 34px; }
+  .pbtn { padding: 7px 14px; font-size: 12px; }
+  .mood-card { padding: 20px 18px 16px; }
+  .mood-row { gap: 7px; }
+  .mood-opt { padding: 11px 2px 9px; }
+  .mood-opt .mo-e { font-size: 19px; }
+  .mood-opt .mo-t { font-size: 9.5px; }
+  .mood-dot { width: 12px; height: 12px; }
+  .habit-card { padding: 20px 20px 10px; }
+  .hname { font-size: 13.5px; }
+  .hs-dot { width: 6px; height: 6px; gap: 4px; }
   .ft { margin-top: 64px; }
 }
 @media (max-width: 360px) {
   .vocab-grid { grid-template-columns: 1fr; }
   .flip-card { height: 140px; }
+  .pomo-time { font-size: 38px; }
+  .pomo-card { gap: 12px; }
+  .clawd { width: 54px; }
+  .clawd-body { font-size: 30px; }
+  .mood-row { gap: 5px; }
+  .mood-opt .mo-t { font-size: 9px; letter-spacing: 0; }
+  .mood-dot { width: 10px; height: 10px; }
+  .mood-trend { gap: 5px; }
+  .hstreak { gap: 3.5px; }
+  .hs-dot { width: 5.5px; height: 5.5px; }
 }
 </style>
 </head>
@@ -451,12 +692,52 @@ body {
   <div class="note-card">
     <div class="note-hint">今天想告诉泠的一件小事 —— 只存在这台设备里</div>
     <textarea class="note-input" id="noteInput" placeholder="写点什么…" rows="2"></textarea>
+    <div class="note-foot" id="noteFoot"></div>
     <div class="note-foot-row">
-      <button class="note-history-btn" id="noteHistBtn" onclick="toggleHistory()">往日小记 ↓</button>
-      <div class="note-foot" id="noteFoot"></div>
+      <span></span>
+      <button class="note-history-btn" onclick="toggleHistory()">往日小记 ▾</button>
+    </div>
+    <div class="note-history" id="noteHistory"></div>
+  </div>
+
+  <p class="sec">番茄钟</p>
+  <div class="pomo-card" id="pomoCard">
+    <div class="pomo-main">
+      <div class="pomo-state" id="pomoState">准备开始</div>
+      <div class="pomo-time" id="pomoTime">
+        <span id="ptMin">25</span><span class="pt-colon">:</span><span id="ptSec">00</span>
+      </div>
+      <div class="pomo-btns">
+        <button class="pbtn pbtn-primary" id="pomoStart" onclick="pomoToggle()">开始</button>
+        <button class="pbtn" onclick="pomoReset()">重置</button>
+      </div>
+      <div class="pomo-count">今天已完成 <b id="pomoCount">0</b> 个番茄</div>
+    </div>
+    <div class="clawd">
+      <span class="clawd-sign" id="clawdSign">专注中</span>
+      <span class="clawd-body" id="clawdBody">🦀</span>
+      <div class="clawd-label">clawd</div>
     </div>
   </div>
-  <div class="note-history" id="noteHistory"></div>
+
+  <p class="sec">今日天色</p>
+  <div class="mood-card" id="moodCard">
+    <div class="mood-row" id="moodRow"></div>
+    <div class="mood-done" id="moodDone"></div>
+    <div class="mood-trend" id="moodTrend">
+      <span class="mood-trend-label">近 14 天</span>
+    </div>
+  </div>
+
+  <p class="sec">习惯追踪</p>
+  <div class="habit-card">
+    <div class="habit-head">
+      <span class="habit-head-t">今天</span>
+      <span class="habit-frac" id="habitFrac">0<small> / 5</small></span>
+    </div>
+    <div class="habit-bar"><div class="habit-bar-fill" id="habitBarFill"></div></div>
+    <div id="habitList"></div>
+  </div>
 
   <footer class="ft">日月同辉 · 泠晞</footer>
 
@@ -585,6 +866,7 @@ const SONGS = [
 /* ── Countdown ── */
 const EVENTS = [
   { label:'内科考试', date:'2026-07-08', up:false },
+  { label:'外科考试', date:'2026-07-14', up:false },
   { label:'认识泠',   date:'2026-03-15', up:true  },
 ];
 
@@ -652,40 +934,272 @@ EVENTS.forEach(ev => {
 
 /* ── 往日小记 ── */
 function toggleHistory() {
-  const el = document.getElementById('noteHistory');
-  const btn = document.getElementById('noteHistBtn');
-  if (el.classList.contains('open')) {
-    el.classList.remove('open');
-    btn.textContent = '往日小记 ↓';
-    return;
+  const box = document.getElementById('noteHistory');
+  box.classList.toggle('open');
+  if (!box.classList.contains('open')) return;
+  box.innerHTML = '';
+  let found = false;
+  for (let off = 1; off <= 30; off++) {
+    const d = bjNow();
+    d.setDate(d.getDate() - off);
+    const k = 'sunNote-' + d.getFullYear() + '-' +
+              String(d.getMonth()+1).padStart(2,'0') + '-' +
+              String(d.getDate()).padStart(2,'0');
+    const v = localStorage.getItem(k);
+    if (v && v.trim()) {
+      found = true;
+      const item = document.createElement('div');
+      item.className = 'note-history-item';
+      item.innerHTML =
+        '<div class="note-history-date">' + k.replace('sunNote-','') + '</div>' +
+        '<div class="note-history-text">' + v.replace(/</g,'&lt;') + '</div>';
+      box.appendChild(item);
+    }
   }
-  const keys = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k.startsWith('sunNote-')) keys.push(k);
+  if (!found) {
+    box.innerHTML = '<div class="note-history-empty">还没有往日小记</div>';
   }
-  keys.sort().reverse();
-  const todayKey = (function() {
-    const bj = bjNow();
-    return 'sunNote-' + bj.getFullYear() + '-' +
-      String(bj.getMonth()+1).padStart(2,'0') + '-' +
-      String(bj.getDate()).padStart(2,'0');
-  })();
-  const past = keys.filter(k => k !== todayKey && localStorage.getItem(k).trim());
-  if (past.length === 0) {
-    el.innerHTML = '<div class="note-history-empty">还没有往日小记</div>';
-  } else {
-    el.innerHTML = past.map(k => {
-      const d = k.replace('sunNote-','').replace(/-/g, '.');
-      return '<div class="note-history-item">' +
-        '<div class="note-history-date">' + d + '</div>' +
-        '<div class="note-history-text">' + localStorage.getItem(k).replace(/</g,'&lt;') + '</div>' +
-      '</div>';
-    }).join('');
-  }
-  el.classList.add('open');
-  btn.textContent = '收起 ↑';
 }
+
+/* ── 日期 key 工具:offset=0 今天,1 昨天,以此类推(北京时间)── */
+function dateKey(offset) {
+  const d = bjNow();
+  d.setDate(d.getDate() - (offset || 0));
+  return d.getFullYear() + '-' +
+         String(d.getMonth() + 1).padStart(2, '0') + '-' +
+         String(d.getDate()).padStart(2, '0');
+}
+
+/* ══════════ 番茄钟 + Clawd ══════════
+   用目标时间戳计时而不是每秒 -1,
+   锁屏/切后台回来时间依然是准的 */
+(function () {
+  const FOCUS = 25 * 60, BREAK = 5 * 60;
+  const card   = document.getElementById('pomoCard');
+  const stateEl= document.getElementById('pomoState');
+  const minEl  = document.getElementById('ptMin');
+  const secEl  = document.getElementById('ptSec');
+  const startBtn = document.getElementById('pomoStart');
+  const countEl  = document.getElementById('pomoCount');
+  const clawd    = document.getElementById('clawdBody');
+  const sign     = document.getElementById('clawdSign');
+
+  const countKey = 'sunPomo-' + dateKey(0);
+  let mode = 'focus';           // focus | break
+  let remain = FOCUS;           // 秒
+  let endAt = null;             // 运行中的目标时间戳
+  let timer = null;
+
+  countEl.textContent = localStorage.getItem(countKey) || 0;
+
+  function draw() {
+    minEl.textContent = String(Math.floor(remain / 60)).padStart(2, '0');
+    secEl.textContent = String(remain % 60).padStart(2, '0');
+    if (endAt) {
+      document.title = minEl.textContent + ':' + secEl.textContent +
+                       (mode === 'focus' ? ' 专注中' : ' 休息中') + ' · Sun';
+    } else {
+      document.title = '☀️ Sun · 泠晞';
+    }
+  }
+
+  function setMode(m) {
+    mode = m;
+    remain = m === 'focus' ? FOCUS : BREAK;
+    card.classList.remove('focusing', 'breaking');
+    draw();
+  }
+
+  function running() { return !!timer; }
+
+  window.pomoToggle = function () {
+    if (running()) {            // 暂停
+      clearInterval(timer); timer = null; endAt = null;
+      card.classList.remove('focusing', 'breaking');
+      stateEl.textContent = '已暂停';
+      startBtn.textContent = '继续';
+      draw();
+      return;
+    }
+    // 开始 / 继续
+    endAt = Date.now() + remain * 1000;
+    card.classList.add(mode === 'focus' ? 'focusing' : 'breaking');
+    stateEl.textContent = mode === 'focus' ? '专注中' : '休息中';
+    sign.textContent    = mode === 'focus' ? '专注中' : '休息~';
+    startBtn.textContent = '暂停';
+    timer = setInterval(() => {
+      remain = Math.max(0, Math.round((endAt - Date.now()) / 1000));
+      draw();
+      if (remain === 0) complete();
+    }, 250);
+    draw();
+  };
+
+  window.pomoReset = function () {
+    clearInterval(timer); timer = null; endAt = null;
+    setMode(mode);
+    stateEl.textContent = '准备开始';
+    startBtn.textContent = '开始';
+  };
+
+  function party() {
+    clawd.classList.remove('party');
+    void clawd.offsetWidth;     // 重新触发动画
+    clawd.classList.add('party');
+    clawd.addEventListener('animationend', () => clawd.classList.remove('party'), { once: true });
+  }
+
+  function flash() {
+    card.classList.remove('flash');
+    void card.offsetWidth;
+    card.classList.add('flash');
+    card.addEventListener('animationend', () => card.classList.remove('flash'), { once: true });
+  }
+
+  function complete() {
+    clearInterval(timer); timer = null; endAt = null;
+    flash(); party();
+    if (mode === 'focus') {
+      const n = (parseInt(localStorage.getItem(countKey)) || 0) + 1;
+      localStorage.setItem(countKey, n);
+      countEl.textContent = n;
+      // 自动开始休息
+      setMode('break');
+      setTimeout(() => window.pomoToggle(), 1800);
+      stateEl.textContent = '完成!休息一下';
+      startBtn.textContent = '开始';
+    } else {
+      // 休息结束:回到专注,等她自己按开始
+      setMode('focus');
+      stateEl.textContent = '休息好了,继续?';
+      startBtn.textContent = '开始';
+    }
+  }
+
+  draw();
+})();
+
+/* ══════════ 今日天色(心情)══════════ */
+(function () {
+  const MOODS = [
+    { e:'☀️', t:'很好',   c:'#FFA94D' },
+    { e:'🌤',  t:'还行',   c:'#FFC98A' },
+    { e:'☁️', t:'一般',   c:'#EBD9C3' },
+    { e:'🌧',  t:'不太好', c:'#B7C3D6' },
+    { e:'⛈',  t:'很差',   c:'#8E9DBC' },
+  ];
+  const card  = document.getElementById('moodCard');
+  const row   = document.getElementById('moodRow');
+  const done  = document.getElementById('moodDone');
+  const trend = document.getElementById('moodTrend');
+  const key   = 'sunMood-' + dateKey(0);
+
+  // 选项
+  MOODS.forEach((m, i) => {
+    const b = document.createElement('button');
+    b.className = 'mood-opt';
+    b.innerHTML = '<span class="mo-e">' + m.e + '</span><span class="mo-t">' + m.t + '</span>';
+    b.addEventListener('click', () => pick(i));
+    row.appendChild(b);
+  });
+
+  function lock(i, timeStr) {
+    card.classList.add('locked');
+    [...row.children].forEach((el, j) => el.classList.toggle('sel', j === i));
+    done.textContent = '已记录 · ' + timeStr;
+    done.classList.add('show');
+  }
+
+  function pick(i) {
+    if (card.classList.contains('locked')) return;
+    const t = bjNow();
+    const timeStr = String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0');
+    localStorage.setItem(key, JSON.stringify({ i: i, t: timeStr }));
+    lock(i, timeStr);
+    renderTrend();
+  }
+
+  function renderTrend() {
+    trend.querySelectorAll('.mood-dot').forEach(el => el.remove());
+    for (let off = 13; off >= 0; off--) {
+      const raw = localStorage.getItem('sunMood-' + dateKey(off));
+      const dot = document.createElement('span');
+      dot.className = 'mood-dot';
+      if (raw) {
+        const m = MOODS[JSON.parse(raw).i];
+        dot.style.background = m.c;
+        dot.title = dateKey(off) + ' · ' + m.t;
+      } else {
+        dot.classList.add('empty');
+        dot.title = dateKey(off);
+      }
+      if (off === 0) dot.classList.add('today');
+      trend.appendChild(dot);
+    }
+  }
+
+  const saved = localStorage.getItem(key);
+  if (saved) { const s = JSON.parse(saved); lock(s.i, s.t); }
+  renderTrend();
+})();
+
+/* ══════════ 习惯追踪 ══════════ */
+(function () {
+  const HABITS = ['喝水 8 杯', '运动', '吃早餐', '复习', '1 点前睡'];
+  const list = document.getElementById('habitList');
+  const frac = document.getElementById('habitFrac');
+  const fill = document.getElementById('habitBarFill');
+  const key  = 'sunHabit-' + dateKey(0);
+
+  let state = [];
+  try { state = JSON.parse(localStorage.getItem(key)) || []; } catch (e) {}
+  while (state.length < HABITS.length) state.push(false);
+
+  function dayState(off) {
+    try { return JSON.parse(localStorage.getItem('sunHabit-' + dateKey(off))) || []; }
+    catch (e) { return []; }
+  }
+
+  function updateHead() {
+    const n = state.filter(Boolean).length;
+    frac.innerHTML = n + '<small> / ' + HABITS.length + '</small>';
+    fill.style.width = (n / HABITS.length * 100) + '%';
+  }
+
+  HABITS.forEach((h, i) => {
+    const row = document.createElement('label');
+    row.className = 'habit-row' + (state[i] ? ' done' : '');
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.className = 'hcheck'; cb.checked = !!state[i];
+
+    const name = document.createElement('span');
+    name.className = 'hname'; name.textContent = h;
+
+    // 近 7 天:左到右 = 6 天前 → 今天
+    const streak = document.createElement('span');
+    streak.className = 'hstreak';
+    for (let off = 6; off >= 0; off--) {
+      const d = document.createElement('span');
+      d.className = 'hs-dot' + (dayState(off)[i] ? ' on' : '') + (off === 0 ? ' today-dot' : '');
+      if (off === 0) d.dataset.todayOf = i;
+      streak.appendChild(d);
+    }
+
+    cb.addEventListener('change', () => {
+      state[i] = cb.checked;
+      localStorage.setItem(key, JSON.stringify(state));
+      row.classList.toggle('done', cb.checked);
+      document.querySelector('[data-today-of="' + i + '"]').classList.toggle('on', cb.checked);
+      updateHead();
+    });
+
+    row.appendChild(cb); row.appendChild(name); row.appendChild(streak);
+    list.appendChild(row);
+  });
+
+  updateHead();
+})();
 </script>
 </body>
 </html>
