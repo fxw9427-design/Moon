@@ -396,16 +396,28 @@ body {
 .pomo-count { font-size: 11.5px; color: var(--muted); margin-top: 14px; letter-spacing: .4px; }
 .pomo-count b { font-family: var(--serif); font-size: 15px; color: var(--orange); font-weight: 600; }
 
-/* Clawd 小螃蟹 */
+/* Clawd 小螃蟹 · pure CSS pixel art */
 .clawd { position: relative; width: 76px; text-align: center; flex-shrink: 0; padding-top: 18px; }
 .clawd-body {
   display: inline-block; line-height: 1;
   animation: clawd-sway 3.2s ease-in-out infinite;
   transform-origin: 50% 90%;
 }
-.clawd-body img {
-  width: 56px; height: auto;
-  image-rendering: pixelated;
+.clawd-px {
+  display: block; position: relative;
+  width: 45px; height: 30px;
+  margin: 0 auto;
+}
+.clawd-px::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 5px; height: 5px; background: transparent;
+  box-shadow:
+    5px 0 0 var(--orange), 35px 0 0 var(--orange),
+    5px 5px 0 var(--orange), 10px 5px 0 var(--orange), 15px 5px 0 var(--orange), 20px 5px 0 var(--orange), 25px 5px 0 var(--orange), 30px 5px 0 var(--orange), 35px 5px 0 var(--orange),
+    0 10px 0 var(--orange), 5px 10px 0 var(--orange), 10px 10px 0 var(--ink), 15px 10px 0 var(--orange), 20px 10px 0 var(--orange), 25px 10px 0 var(--orange), 30px 10px 0 var(--ink), 35px 10px 0 var(--orange), 40px 10px 0 var(--orange),
+    0 15px 0 var(--orange), 5px 15px 0 var(--orange), 10px 15px 0 var(--orange), 15px 15px 0 var(--orange), 20px 15px 0 var(--orange), 25px 15px 0 var(--orange), 30px 15px 0 var(--orange), 35px 15px 0 var(--orange), 40px 15px 0 var(--orange),
+    5px 20px 0 var(--orange), 10px 20px 0 var(--orange), 15px 20px 0 var(--orange), 20px 20px 0 var(--orange), 25px 20px 0 var(--orange), 30px 20px 0 var(--orange), 35px 20px 0 var(--orange),
+    5px 25px 0 var(--orange), 15px 25px 0 var(--orange), 25px 25px 0 var(--orange), 35px 25px 0 var(--orange);
 }
 @keyframes clawd-sway {
   0%,100% { transform: rotate(-6deg); }
@@ -637,7 +649,7 @@ body {
   .pomo-card { padding: 22px 20px 18px; gap: 16px; }
   .pomo-time { font-size: 44px; }
   .clawd { width: 62px; }
-  .clawd-body img { width: 46px; }
+  .clawd-px { transform: scale(.85); }
   .pbtn { padding: 7px 14px; font-size: 12px; }
   .mood-card { padding: 20px 18px 16px; }
   .mood-row { gap: 7px; }
@@ -656,7 +668,7 @@ body {
   .pomo-time { font-size: 38px; }
   .pomo-card { gap: 12px; }
   .clawd { width: 54px; }
-  .clawd-body img { width: 40px; }
+  .clawd-px { transform: scale(.75); }
   .mood-row { gap: 5px; }
   .mood-opt .mo-t { font-size: 9px; letter-spacing: 0; }
   .mood-dot { width: 10px; height: 10px; }
@@ -719,7 +731,7 @@ body {
     </div>
     <div class="clawd">
       <span class="clawd-sign" id="clawdSign">专注中</span>
-      <span class="clawd-body" id="clawdBody"><img src="stickers/clawd.gif" alt="clawd"></span>
+      <span class="clawd-body" id="clawdBody"><span class="clawd-px"></span></span>
       <div class="clawd-label">clawd</div>
     </div>
   </div>
