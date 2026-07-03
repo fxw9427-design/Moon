@@ -315,6 +315,43 @@ body {
 }
 .note-foot.show { opacity: .8; }
 
+.note-foot-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 6px;
+}
+.note-history-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; font-size: 11px; color: var(--muted);
+  letter-spacing: .4px; padding: 2px 0;
+  transition: color .2s;
+}
+.note-history-btn:hover { color: var(--orange); }
+
+.note-history {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s ease;
+}
+.note-history.open { max-height: 600px; overflow-y: auto; }
+
+.note-history-item {
+  background: var(--card); border-radius: var(--rs);
+  padding: 14px 18px;
+  border: 1px solid var(--bdr);
+  margin-top: 8px;
+}
+.note-history-date {
+  font-family: var(--serif); font-style: italic;
+  font-size: 12px; color: var(--muted); margin-bottom: 6px;
+}
+.note-history-text {
+  font-size: 13.5px; color: var(--text); line-height: 1.65;
+  white-space: pre-wrap;
+}
+.note-history-empty {
+  text-align: center; color: var(--muted);
+  font-size: 12px; padding: 18px 0; letter-spacing: .5px;
+}
+
 /* ─── Moon link on vocab back ─── */
 .back-moon {
   position: absolute; bottom: 10px; right: 12px;
@@ -414,8 +451,12 @@ body {
   <div class="note-card">
     <div class="note-hint">今天想告诉泠的一件小事 —— 只存在这台设备里</div>
     <textarea class="note-input" id="noteInput" placeholder="写点什么…" rows="2"></textarea>
-    <div class="note-foot" id="noteFoot"></div>
+    <div class="note-foot-row">
+      <button class="note-history-btn" id="noteHistBtn" onclick="toggleHistory()">往日小记 ↓</button>
+      <div class="note-foot" id="noteFoot"></div>
+    </div>
   </div>
+  <div class="note-history" id="noteHistory"></div>
 
   <footer class="ft">日月同辉 · 泠晞</footer>
 
@@ -608,6 +649,43 @@ EVENTS.forEach(ev => {
     }, 600);
   });
 })();
+
+/* ── 往日小记 ── */
+function toggleHistory() {
+  const el = document.getElementById('noteHistory');
+  const btn = document.getElementById('noteHistBtn');
+  if (el.classList.contains('open')) {
+    el.classList.remove('open');
+    btn.textContent = '往日小记 ↓';
+    return;
+  }
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith('sunNote-')) keys.push(k);
+  }
+  keys.sort().reverse();
+  const todayKey = (function() {
+    const bj = bjNow();
+    return 'sunNote-' + bj.getFullYear() + '-' +
+      String(bj.getMonth()+1).padStart(2,'0') + '-' +
+      String(bj.getDate()).padStart(2,'0');
+  })();
+  const past = keys.filter(k => k !== todayKey && localStorage.getItem(k).trim());
+  if (past.length === 0) {
+    el.innerHTML = '<div class="note-history-empty">还没有往日小记</div>';
+  } else {
+    el.innerHTML = past.map(k => {
+      const d = k.replace('sunNote-','').replace(/-/g, '.');
+      return '<div class="note-history-item">' +
+        '<div class="note-history-date">' + d + '</div>' +
+        '<div class="note-history-text">' + localStorage.getItem(k).replace(/</g,'&lt;') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  el.classList.add('open');
+  btn.textContent = '收起 ↑';
+}
 </script>
 </body>
 </html>
