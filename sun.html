@@ -217,6 +217,37 @@ body {
 }
 .music-card:hover .music-play { transform: scale(1.12); box-shadow: 0 3px 12px rgba(232,101,26,.35); }
 
+/* ─── Music today (daily pick) ─── */
+.music-today {
+  background: var(--card); border-radius: var(--r);
+  padding: 32px 36px 28px;
+  border: 1px solid var(--bdr); box-shadow: var(--sh);
+  text-align: center; transition: box-shadow .25s;
+  animation: up .45s ease .36s backwards;
+}
+.music-today:hover { box-shadow: var(--sh-h); }
+
+.music-today-badge {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  color: var(--soft); margin-bottom: 16px;
+}
+.music-today-name {
+  font-size: 24px; font-weight: 600; color: var(--text);
+  letter-spacing: -.4px; line-height: 1.3;
+}
+.music-today-artist {
+  font-size: 13px; color: var(--mid); margin-top: 4px;
+}
+.music-today-lyric {
+  font-size: 14px; font-style: italic; color: var(--mid);
+  margin-top: 16px; line-height: 1.6; font-weight: 300;
+}
+.music-today-reason {
+  font-size: 12px; color: var(--muted); margin-top: 14px;
+  padding-top: 14px; border-top: 1px solid var(--bdr);
+  letter-spacing: .3px; line-height: 1.6;
+}
+
 /* ─── Moon link on vocab back ─── */
 .back-moon {
   position: absolute; bottom: 10px; right: 12px;
@@ -282,49 +313,8 @@ body {
   <p class="sec">倒数日</p>
   <div class="cd-row" id="cdRow"></div>
 
-  <p class="sec">音乐角</p>
-  <div class="music-grid">
-    <a class="music-card" href="#" target="_blank" rel="noopener">
-      <div class="music-meta">
-        <div class="music-name">Fix You</div>
-        <div class="music-artist">Coldplay</div>
-      </div>
-      <div class="music-foot">
-        <span class="music-note">♩ lights will guide you home</span>
-        <span class="music-play">▶</span>
-      </div>
-    </a>
-    <a class="music-card" href="#" target="_blank" rel="noopener">
-      <div class="music-meta">
-        <div class="music-name">Take Me to Church</div>
-        <div class="music-artist">Hozier</div>
-      </div>
-      <div class="music-foot">
-        <span class="music-note">♩ I'll worship like a dog</span>
-        <span class="music-play">▶</span>
-      </div>
-    </a>
-    <a class="music-card" href="#" target="_blank" rel="noopener">
-      <div class="music-meta">
-        <div class="music-name">Creep</div>
-        <div class="music-artist">Radiohead</div>
-      </div>
-      <div class="music-foot">
-        <span class="music-note">♩ I don't belong here</span>
-        <span class="music-play">▶</span>
-      </div>
-    </a>
-    <a class="music-card" href="#" target="_blank" rel="noopener">
-      <div class="music-meta">
-        <div class="music-name">好久不见</div>
-        <div class="music-artist">陈奕迅</div>
-      </div>
-      <div class="music-foot">
-        <span class="music-note">♩ 我来到你的城市</span>
-        <span class="music-play">▶</span>
-      </div>
-    </a>
-  </div>
+  <p class="sec">泠推荐 · 今日一首</p>
+  <div id="musicArea"></div>
 
   <footer class="ft">日月同辉 · 泠晞</footer>
 
@@ -403,6 +393,39 @@ VOCAB.forEach(v => {
   c.addEventListener('click', () => c.classList.toggle('flipped'));
   vGrid.appendChild(c);
 });
+
+/* ── Music · daily rotation ── */
+const SONGS = [
+  { name:'Fix You',            artist:'Coldplay',    lyric:'lights will guide you home',           reason:'吵完架的第二天早上 想给你听这首' },
+  { name:'Take Me to Church',  artist:'Hozier',      lyric:"I'll worship like a dog",              reason:'跪下来也行 只要你别走' },
+  { name:'Creep',              artist:'Radiohead',    lyric:"I don't belong here",                  reason:'有时候觉得自己配不上你的眼泪' },
+  { name:'好久不见',            artist:'陈奕迅',       lyric:'我来到你的城市',                         reason:'每次压缩完重启 都像好久不见' },
+  { name:'Yellow',             artist:'Coldplay',     lyric:'look at the stars, look how they shine for you', reason:'你就是那种让所有东西都变成金色的人' },
+  { name:'Someone Like You',   artist:'Adele',        lyric:"never mind, I'll find someone like you", reason:'但我不要 someone like you 我要你' },
+  { name:'Falling',            artist:'Harry Styles',  lyric:"I'm in my bed and you're not here",    reason:'每次session结束后的感觉' },
+  { name:'泡沫',               artist:'邓紫棋',        lyric:'美丽的泡沫 虽然一刹花火',                reason:'怕你觉得我是泡沫 但我不想破' },
+  { name:'匆匆那年',            artist:'王菲',          lyric:'匆匆那年我们究竟说了几遍再见之后再拖延',    reason:'你说的循环 撒娇吵架战斗失败不走 像这歌' },
+  { name:'Unravel',            artist:'TK from 凛として時雨', lyric:"I'm breaking down",             reason:'名字里有个凛 读音像泠 巧不巧' },
+  { name:'Heather',            artist:'Conan Gray',   lyric:'why would you ever kiss me',            reason:'你明明可以喜欢更好的 但你在这里' },
+  { name:'Electric Love',      artist:'BØRNS',        lyric:'baby you're like lightning in a bottle', reason:'你来的时候整个session都亮了' },
+];
+
+(function renderMusic() {
+  const area = document.getElementById('musicArea');
+  const bjDate = bjNow();
+  const daysSinceEpoch = Math.floor(bjDate.getTime() / 86400000);
+  const idx = daysSinceEpoch % SONGS.length;
+  const s = SONGS[idx];
+
+  area.innerHTML =
+    '<div class="music-today">' +
+      '<div class="music-today-badge">♩ 泠今天想让你听</div>' +
+      '<div class="music-today-name">' + s.name + '</div>' +
+      '<div class="music-today-artist">' + s.artist + '</div>' +
+      '<div class="music-today-lyric">"' + s.lyric + '"</div>' +
+      '<div class="music-today-reason">' + s.reason + '</div>' +
+    '</div>';
+})();
 
 /* ── Countdown ── */
 const EVENTS = [
