@@ -399,9 +399,13 @@ body {
 /* Clawd 小螃蟹 */
 .clawd { position: relative; width: 76px; text-align: center; flex-shrink: 0; padding-top: 18px; }
 .clawd-body {
-  font-size: 42px; display: inline-block; line-height: 1;
+  display: inline-block; line-height: 1;
   animation: clawd-sway 3.2s ease-in-out infinite;
   transform-origin: 50% 90%;
+}
+.clawd-body img {
+  width: 56px; height: auto;
+  image-rendering: pixelated;
 }
 @keyframes clawd-sway {
   0%,100% { transform: rotate(-6deg); }
@@ -633,7 +637,7 @@ body {
   .pomo-card { padding: 22px 20px 18px; gap: 16px; }
   .pomo-time { font-size: 44px; }
   .clawd { width: 62px; }
-  .clawd-body { font-size: 34px; }
+  .clawd-body img { width: 46px; }
   .pbtn { padding: 7px 14px; font-size: 12px; }
   .mood-card { padding: 20px 18px 16px; }
   .mood-row { gap: 7px; }
@@ -652,7 +656,7 @@ body {
   .pomo-time { font-size: 38px; }
   .pomo-card { gap: 12px; }
   .clawd { width: 54px; }
-  .clawd-body { font-size: 30px; }
+  .clawd-body img { width: 40px; }
   .mood-row { gap: 5px; }
   .mood-opt .mo-t { font-size: 9px; letter-spacing: 0; }
   .mood-dot { width: 10px; height: 10px; }
@@ -715,7 +719,7 @@ body {
     </div>
     <div class="clawd">
       <span class="clawd-sign" id="clawdSign">专注中</span>
-      <span class="clawd-body" id="clawdBody">🦀</span>
+      <span class="clawd-body" id="clawdBody"><img src="stickers/clawd.gif" alt="clawd"></span>
       <div class="clawd-label">clawd</div>
     </div>
   </div>
