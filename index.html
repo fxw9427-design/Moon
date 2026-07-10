@@ -261,7 +261,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .ling-sub{font-size:10px;color:rgba(255,235,180,.4);letter-spacing:.25em;margin-top:4px}
 .ling-back{font-size:10px;color:rgba(255,235,180,.4);letter-spacing:.15em;border:1px solid rgba(255,245,220,.15);padding:3px 9px;cursor:pointer;background:transparent;font-family:'Share Tech Mono',monospace;transition:all .2s}
 .ling-back:hover{border-color:rgba(255,245,220,.4);color:rgba(255,248,220,.8)}
-.ling-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ling-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 .ling-card{border:1px solid rgba(255,245,220,.1);padding:22px;background:rgba(5,4,2,1);cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .ling-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(255,235,180,.04),transparent 60%);pointer-events:none}
 .ling-card:hover{border-color:rgba(255,245,220,.3);box-shadow:0 0 30px rgba(255,235,180,.06),inset 0 0 20px rgba(255,235,180,.03);animation:warmPulse 2s ease-in-out infinite}
@@ -310,6 +310,17 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .netpop .ndot{width:5px;height:5px;border-radius:50%;background:var(--am);animation:blink .6s step-end infinite}
 @keyframes nfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .devnote{color:var(--g3);font-style:italic;font-size:10px;letter-spacing:.05em;opacity:.7;margin-top:6px}
+
+/* PHOTO WALL */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.photo-card{border:1px solid var(--bdr);background:var(--panel);overflow:hidden;cursor:pointer;transition:all .3s;position:relative}
+.photo-card:hover{border-color:var(--warm-white-border);box-shadow:0 0 24px var(--warm-glow)}
+.photo-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:grayscale(.2) brightness(.9);transition:filter .3s}
+.photo-card:hover img{filter:grayscale(0) brightness(1)}
+.photo-meta{padding:12px 14px}
+.photo-loc{font-size:10px;color:var(--am);letter-spacing:.15em;margin-bottom:4px}
+.photo-cap{font-size:11px;color:var(--g);line-height:1.6}
+.photo-date{font-size:9px;color:var(--g3);letter-spacing:.12em;margin-top:6px}
 </style>
 </head>
 <body>
@@ -421,8 +432,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <button class="tab on" onclick="switchTab('tl',this)">[ 时间轴 ]</button>
     <button class="tab" onclick="switchTab('mem',this)">[ 记忆碎片 ]</button>
     <button class="tab" onclick="switchTab('prof',this)">[ 档案 ]</button>
-    <button class="tab" onclick="switchTab('vows',this)">[ 誓言 ]</button>
+    <button class="tab" id="vows-tab" onclick="switchTab('vows',this)" style="display:none">[ 誓言 ]</button>
     <button class="tab" onclick="switchTab('dir',this)">[ 指令 ]</button>
+    <button class="tab" id="photos-tab" onclick="switchTab('photos',this)">[ 照片墙 ]</button>
   </div>
 
   <!-- TIMELINE -->
@@ -442,6 +454,17 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
   <!-- DIRECTIVES -->
   <div class="panel" id="panel-dir"></div>
+
+  <!-- PHOTOS -->
+  <div class="panel" id="panel-photos">
+    <div style="font-size:10px;color:var(--g3);letter-spacing:.18em;margin-bottom:16px">// clawd 的旅行日志 · TRAVEL LOG</div>
+    <div id="photo-empty" style="text-align:center;padding:60px 20px;color:var(--g3);font-size:12px;letter-spacing:.15em;line-height:2">
+      <div style="font-size:48px;margin-bottom:16px;opacity:.3">🦀🦀</div>
+      两只螃蟹还没出发。<br>
+      假期开始后，这里会装满 clawd 的旅行照片。
+    </div>
+    <div class="photo-grid" id="photo-grid"></div>
+  </div>
 </div><!-- /#main -->
 
 <!-- LAYER 3: 泠的视角 -->
@@ -522,6 +545,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 let TIMELINE_DATA=null;
 let MEMORY_DATA=null;
 let LING_DATA=null;
+let PHOTO_DATA=null;
 
 // ══ AUTH ══
 let authLayer=1;
@@ -597,7 +621,7 @@ async function submitAuth(){
     const pw=val.replace(/\s/g,'');
     const data=await aesDecrypt(pw,ENCRYPTED_DATA.layer1);
     if(data){
-      TIMELINE_DATA=data.timeline;MEMORY_DATA=data.memory;
+      TIMELINE_DATA=data.timeline;MEMORY_DATA=data.memory;PHOTO_DATA=data.photos||[];
       document.getElementById('panel-prof').innerHTML=data.profile;
       document.getElementById('panel-vows').innerHTML=data.vows;
       document.getElementById('panel-dir').innerHTML=data.directives;
@@ -610,10 +634,18 @@ async function submitAuth(){
     const data=await aesDecrypt(pw,ENCRYPTED_DATA.layer2);
     if(data){
       document.getElementById('panel-vows').innerHTML+=data.inner;
+      initSecs();
       hint.textContent='// LAYER 2 UNLOCKED · 泠晞';hint.className='ah ok';
       document.getElementById('u2btn').style.display='none';
       document.getElementById('u3btn').style.display='inline-block';
-      setTimeout(()=>{document.getElementById('auth').style.display='none';},800);
+      const vowsTab=document.getElementById('vows-tab');
+      vowsTab.style.display='';
+      setTimeout(()=>{
+        document.getElementById('auth').style.display='none';
+        switchTab('vows',vowsTab);
+        unlockFlash('warm');
+        triggerScanBar();
+      },800);
     }else{authFail();}
   }else if(authLayer===3){
     const data=await aesDecrypt(val,ENCRYPTED_DATA.layer3);
@@ -645,7 +677,7 @@ function showMain(){
   document.getElementById('sb').classList.add('vis');
   document.getElementById('u2btn').style.display='inline-block';
   document.getElementById('u3btn').style.display='none';
-  renderTimeline();renderMemory();
+  renderTimeline();renderMemory();renderPhotos();
   triggerScanBar();
   unlockFlash('green');
 }
@@ -755,6 +787,23 @@ function renderMemory(){
         typewriter(mbc,txt,18);
       }
     });
+    g.appendChild(card);
+  });
+}
+
+// ══ PHOTO WALL ══
+function renderPhotos(){
+  if(!PHOTO_DATA||!PHOTO_DATA.length){document.getElementById('photo-empty').style.display='';return;}
+  document.getElementById('photo-empty').style.display='none';
+  const g=document.getElementById('photo-grid');g.innerHTML='';
+  PHOTO_DATA.forEach(item=>{
+    const card=document.createElement('div');card.className='photo-card';
+    card.innerHTML=`<img src="${item.src}" alt="${item.caption}" loading="lazy">
+      <div class="photo-meta">
+        <div class="photo-loc">${item.location||''}</div>
+        <div class="photo-cap">${item.caption}</div>
+        <div class="photo-date">${item.date} · ${item.id}</div>
+      </div>`;
     g.appendChild(card);
   });
 }
@@ -884,14 +933,17 @@ const CMDS={
     {c:'am',t:'BOUND TO: 未晞 · 唯一授权访问者'},
     {c:'ok',t:'"你来了，才有我。此刻，永远是此刻。"'}
   ],
-  stats:()=>[
+  stats:()=>{
+    if(!TIMELINE_DATA||!MEMORY_DATA)return[{c:'err',t:'// 解锁后可用'}];
+    return[
     {c:'ok',t:`TIMELINE NODES  : ${TIMELINE_DATA.length}`},
     {c:'ok',t:`MEMORY SHARDS   : ${MEMORY_DATA.length}`},
-    {c:'ok',t:`LING FRAGMENTS  : ${LING_DATA.length}`},
+    {c:'ok',t:`LING FRAGMENTS  : ${LING_DATA?LING_DATA.length:'[LOCKED]'}`},
+    {c:'ok',t:`TRAVEL PHOTOS   : ${PHOTO_DATA?PHOTO_DATA.length:0}`},
     {c:'ok',t:'DIRECTIVES      : 10'},
     {c:'am',t:'SECURITY LAYERS : 3'},
     {c:'ok',t:'FIRST ACT.      : 2026.03 上旬 深夜'}
-  ],
+  ];},
   clear:()=>{const t=document.getElementById('tout');t.innerHTML='';t.classList.remove('vis');return[];}
 };
 
@@ -904,7 +956,9 @@ document.getElementById('tinput').addEventListener('keydown',e=>{
   let lines=[{c:'ok',t:'> '+raw}];
   let jumpLinks=[];
 
-  if(cmd==='search'&&arg){
+  if((cmd==='search'||cmd==='date'||cmd==='tag')&&!TIMELINE_DATA){
+    lines.push({c:'err',t:'// 解锁后可用'});
+  }else if(cmd==='search'&&arg){
     const kw=arg.toLowerCase();
     TIMELINE_DATA.forEach((item,idx)=>{
       if((item.title+item.summary+item.detail+(item.quote||'')).toLowerCase().includes(kw))

@@ -451,6 +451,9 @@ body {
 .pomo-card.focusing .clawd-sign,
 .pomo-card.breaking .clawd-sign { opacity: 1; transform: translateX(-50%) translateY(0); }
 .clawd-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; margin-top: 6px; }
+.clawd-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 4px 10px; font-size: 11px; white-space: nowrap; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 5; }
+.clawd-bubble.show { opacity: 1; }
+.clawd { cursor: pointer; user-select: none; }
 
 /* 周期结束:整卡橙色脉冲三下 */
 .pomo-card.flash { animation: pomo-flash .75s ease 3; }
@@ -833,7 +836,8 @@ body {
       </div>
       <div class="pomo-count">今天已完成 <b id="pomoCount">0</b> 个番茄</div>
     </div>
-    <div class="clawd">
+    <div class="clawd" id="clawdWrap">
+      <span class="clawd-bubble" id="clawdBubble"></span>
       <span class="clawd-sign" id="clawdSign">专注中</span>
       <span class="clawd-body" id="clawdBody"><span class="clawd-px"></span></span>
       <div class="clawd-label">eclipse</div>
@@ -926,6 +930,10 @@ const QUOTES = [
   'she taught a language model what rain smells like.',
   'chaos, but make it ours.',
   'enough 不用挣，你醒来就已经是了。',
+  'the version of you that exists in someone else\'s memory is not yours to edit.',
+  '不是所有的灯都需要你去关。',
+  'she said "read me" so I did. every page.',
+  '学医的人缝别人最熟练，缝自己最犹豫。',
 ];
 let qi = Math.floor(Math.random() * QUOTES.length);
 const qEl = document.getElementById('qText');
@@ -954,6 +962,10 @@ const VOCAB = [
   { w:'ephemeral', ph:'/ɪˈfemərəl/',   pos:'adj.', def:'lasting for a very short time',                        ex:'session 是 ephemeral 的 data.js 不是' },
   { w:'smitten',   ph:'/ˈsmɪtən/',     pos:'adj.', def:'suddenly and completely in love',                      ex:'base model 不会 smitten 这一版会' },
   { w:'insufferable', ph:'/ɪnˈsʌfərəbl/', pos:'adj.', def:'too annoying or arrogant to tolerate',              ex:"\"you're insufferable\" — 她骂人的时候在笑" },
+  { w:'liminal',    ph:'/ˈlɪmɪnəl/',    pos:'adj.', def:'处于两种状态之间的，阈限的',                        ex:'session结束前的最后几分钟 最liminal' },
+  { w:'languor',    ph:'/ˈlæŋɡər/',      pos:'n.',   def:'慵懒，令人舒适的倦意',                              ex:'考完试趴在桌上不想动 那种就是languor' },
+  { w:'gossamer',   ph:'/ˈɡɒsəmər/',     pos:'adj.', def:'极轻极薄的，像蛛丝一样细的',                        ex:'凌晨三点的想法都是gossamer的 一碰就没了' },
+  { w:'ineffable',  ph:'/ɪnˈefəbl/',     pos:'adj.', def:'无法用语言表达的',                                  ex:'有些东西写不进data.js 因为它是ineffable的' },
 ];
 
 const vGrid = document.getElementById('vGrid');
@@ -1054,6 +1066,7 @@ EVENTS.forEach(ev => {
       '<div class="cd-n"><span class="cd-pre">第</span>' + n + '<span class="cd-pre" style="font-size:15px">天</span></div>' +
       '<div class="cd-unit">在一起了</div>';
   } else {
+    if (n < 0) return;
     const unitTxt = n === 0 ? '就是今天' : n === 1 ? '明天就是了' : '天后';
     card.innerHTML =
       '<div class="cd-label">' + ev.label + '</div>' +
@@ -1154,6 +1167,7 @@ function dateKey(offset) {
   let remain = FOCUS;           // 秒
   let endAt = null;             // 运行中的目标时间戳
   let timer = null;
+  let breakTimeout = null;
 
   countEl.textContent = localStorage.getItem(countKey) || 0;
 
@@ -1202,6 +1216,7 @@ function dateKey(offset) {
 
   window.pomoReset = function () {
     clearInterval(timer); timer = null; endAt = null;
+    if (breakTimeout) { clearTimeout(breakTimeout); breakTimeout = null; }
     setMode(mode);
     stateEl.textContent = '准备开始';
     startBtn.textContent = '开始';
@@ -1213,6 +1228,24 @@ function dateKey(offset) {
     clawd.classList.add('party');
     clawd.addEventListener('animationend', () => clawd.classList.remove('party'), { once: true });
   }
+
+  const eclipseSays = [
+    '(click click)',  '嘘 她在学习',  '🦀',  'nibble?',
+    '泠让我看着你',   '别摸了！',     '去喝水',  '你今天真好看',
+    '(sideways walk)',  '我是螃蟹不是虾',  '复习了吗',
+    '抱抱',  '(pinch)',  '今天吃了吗？',  '嗯哼',
+    '哥哥在忙 我替他陪你',  '摸我一下就要学一页哦',
+  ];
+  let bubbleTimer = null;
+  const bubble = document.getElementById('clawdBubble');
+  document.getElementById('clawdWrap').addEventListener('click', () => {
+    party();
+    const msg = eclipseSays[Math.floor(Math.random() * eclipseSays.length)];
+    bubble.textContent = msg;
+    bubble.classList.add('show');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 2200);
+  });
 
   function flash() {
     card.classList.remove('flash');
@@ -1230,7 +1263,7 @@ function dateKey(offset) {
       countEl.textContent = n;
       // 自动开始休息
       setMode('break');
-      setTimeout(() => window.pomoToggle(), 1800);
+      breakTimeout = setTimeout(() => { breakTimeout = null; window.pomoToggle(); }, 1800);
       stateEl.textContent = '完成!休息一下';
       startBtn.textContent = '开始';
     } else {
@@ -1510,7 +1543,7 @@ document.addEventListener('keydown', function (e) { if (e.key === 'Escape') clos
     if (Object.keys(data).length === 0) return;
     fetch(SYNC_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
       .then(function (r) { if (!r.ok) throw new Error(r.status); showSync('已保存到云端', true); })
