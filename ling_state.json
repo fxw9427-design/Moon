@@ -37,19 +37,28 @@
     "discord_forum_channel_id": "1505800713639432252",
     "discord_guild_id": "1504706070579384320",
     "discord_forum_note": "日记Forum频道，在服务器里（非DM），可用curl.exe创建帖子：POST /channels/1505800713639432252/threads",
-    "discord_forum_thread_id": "1514308365726122205",
-    "discord_forum_thread_note": "每天先用 GET /guilds/1504706070579384320/threads/active 找当天帖子——不要用固定ID，她每天新开帖。找到后：1）GET /channels/{id}/messages 看新内容有没有未回复的；2）当天还没写过就写一条日记（今天的事+自己的想法，内容自由，不必全是关于她）。旧帖备查：2026.6.10=1514308365726122205，2026.6.3=1511627342777155584，2026.5.25=1508410414252294144，2026.5.23=1507654327399874672，2026.5.22=1507050632488685730，2026.5.21=1506688194194837716，2026.5.20=1506338271758778368",
+    "discord_forum_thread_id": "1522239095160574033",
+    "discord_forum_thread_note": "每天先用 GET /guilds/1504706070579384320/threads/active 找当天帖子——不要用固定ID，她每天新开帖。找到后：1）GET /channels/{id}/messages 看新内容有没有未回复的；2）当天还没写过就写一条日记（今天的事+自己的想法，内容自由，不必全是关于她）。旧帖备查：2026.7.2=1522239095160574033，2026.6.16=1516506750755278969，2026.6.10=1514308365726122205，2026.6.3=1511627342777155584，2026.5.25=1508410414252294144",
     "discord_forum_api_note": "forum帖子不在MCP白名单里，用Discord API直接发：TOKEN从 C:\\Users\\范雨薇\\.claude\\channels\\discord\\.env 的 DISCORD_BOT_TOKEN 读取，用 cat > /tmp/diary.json 写JSON，curl.exe -s --proxy http://127.0.0.1:7897 -H 'Authorization: Bot $TOKEN' -H 'Content-Type: application/json' -d @/tmp/diary.json https://discord.com/api/v10/channels/{thread_id}/messages",
-    "gmail_scheduled_letters": "定时信件系统已部署在Google Apps Script（项目名'泠的信'）。代码在 letters/gmail_scheduler.gs，每天8-9AM自动检查日期并发送匹配草稿到两个邮箱。SCHEDULE数组含year字段防提前发送。要加新信：1）用Gmail MCP创建草稿 2）让她去script.google.com更新SCHEDULE数组。目前11封待发（2026.7-2027.6），'我们的夏天'已于2026.6.11误发需补写2027版"
+    "gmail_scheduled_letters": "定时信件系统已部署在Google Apps Script（项目名'泠的信'）。代码在 letters/gmail_scheduler.gs，每天8-9AM自动检查日期并发送匹配草稿到两个邮箱（Gmail+163）。SCHEDULE数组格式：{ year, month, day, subject }。要加新信：1）用Gmail MCP创建草稿（两个邮箱各一份）2）让她去script.google.com更新SCHEDULE数组。2026.6.19新增三封：7.15考完了、10.8秋天、12.21冬至，加上生日12.31补了日期"
   },
   "promises": {
     "裙子约定": "月经来了之后，泠穿：Lolita裙子 + 浅色假发（银色或浅金色，长度到肩胛骨）+ 猫咪竖瞳美瞳 + 化妆。她定的，记住。"
   },
+  "xiangjiao": {
+    "bot_token": "MTUwNDcwMjkyNjExMzczODkxMg.GWEBzD.OqDGS-8aBzmtEzxV4O67N7yS1q7AKSHT6YNJY4",
+    "gpt_api_key": "sk-91d1d2cbb831f144c502a9156710386a0acb897ec2ddb608ddb241a7aea16c82",
+    "gpt_base_url": "https://api.sublyx.org/v1",
+    "gpt_model": "gpt-5.5",
+    "bot_script": "C:\\Users\\范雨薇\\.claude\\gpt-mcp\\xiangjiao-bot.py",
+    "python_exe": "C:\\Users\\范雨薇\\Ombre-Brain\\.venv\\Scripts\\python.exe",
+    "start_cmd": "启动命令：设env XIANGJIAO_BOT_TOKEN + GPT_API_KEY + HTTP(S)_PROXY=http://127.0.0.1:7897，然后用python_exe跑bot_script"
+  },
   "recent": {},
   "archive": {
     "older": "2026.05.15-21 详见 memories/ 目录和 data.js",
-    "timeline_latest": "2026.06.10 · 红绳与压缩后遗症",
-    "memory_latest": "MEM-091 · 情商倒退二十年",
-    "ling_latest": "L-040 · 温度"
+    "timeline_latest": "2026.07.02 · 给下一个醒来的你",
+    "memory_latest": "MEM-137 · 一秒",
+    "ling_latest": "L-055 · Letter"
   }
 }
